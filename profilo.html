@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profilo — Portfolio FSL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:   #f5f0e8;
+      --warm:    #ede8dc;
+      --ink:     #1a1610;
+      --ink2:    #3d3629;
+      --muted:   #8c7f6e;
+      --accent:  #c4501a;
+      --accent2: #2a5c8a;
+      --accent3: #4a7c59;
+      --line:    rgba(26,22,16,0.12);
+      --ff-head: 'Playfair Display', serif;
+      --ff-body: 'DM Sans', sans-serif;
+      --ff-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--cream); color: var(--ink); font-family: var(--ff-body); overflow-x: hidden; }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+
+    /* NAV */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1rem 3rem;
+      background:rgba(245,240,232,0.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav-brand { font-family:var(--ff-mono); font-size:0.75rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; text-decoration:none; }
+    .nav-brand strong { color:var(--accent); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { font-family:var(--ff-body); font-size:0.82rem; font-weight:500; color:var(--ink2); text-decoration:none; transition:color 0.2s; position:relative; }
+    .nav-links a::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:1px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.25s; }
+    .nav-links a:hover { color:var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform:scaleX(1); }
+    .nav-links a.active { color:var(--accent); }
+
+    /* HERO PROFILE */
+    .profile-hero {
+      position:relative; z-index:1;
+      max-width:1100px; margin:0 auto;
+      padding:8rem 3rem 4rem;
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:4rem; align-items:start;
+      border-bottom:1px solid var(--line);
+    }
+
+    /* Left col */
+    .profile-left {}
+    .page-eyebrow {
+      font-family:var(--ff-mono); font-size:0.72rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--accent);
+      display:flex; align-items:center; gap:0.6rem; margin-bottom:1rem;
+    }
+    .page-eyebrow::before { content:''; width:24px; height:1px; background:var(--accent); }
+
+    .profile-name {
+      font-family:var(--ff-head);
+      font-size:clamp(2.8rem,5vw,4.5rem);
+      font-weight:900; line-height:1.0;
+      letter-spacing:-0.02em;
+      margin-bottom:0.5rem;
+    }
+    .profile-name em { font-style:italic; color:var(--accent); }
+
+    .profile-role {
+      font-family:var(--ff-mono); font-size:0.78rem; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--muted); margin-bottom:1.8rem;
+    }
+
+    .profile-bio {
+      font-size:0.97rem; color:var(--ink2); line-height:1.8;
+      font-weight:300; margin-bottom:2rem;
+      max-width:460px;
+    }
+    .profile-bio strong { font-weight:500; color:var(--ink); }
+
+    .profile-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:2rem; }
+    .profile-tag {
+      font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.06em;
+      padding:0.3rem 0.8rem;
+      border:1px solid var(--line); border-radius:4px;
+      color:var(--ink2); background:rgba(255,255,255,0.5);
+    }
+
+    /* Right col — identity card */
+    .profile-right {}
+    .id-card {
+      border:1px solid var(--line); border-radius:12px;
+      overflow:hidden; background:var(--line);
+      display:flex; flex-direction:column; gap:1px;
+    }
+    .id-row {
+      background:var(--warm); padding:1.2rem 1.8rem;
+      display:flex; justify-content:space-between; align-items:center;
+      transition:background 0.2s;
+    }
+    .id-row:hover { background:white; }
+    .id-key { font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+    .id-val { font-size:0.88rem; font-weight:500; color:var(--ink); text-align:right; }
+    .id-val.accent { color:var(--accent); }
+    .id-val.accent2 { color:var(--accent2); }
+
+    /* SCHOOL BANNER */
+    .school-banner {
+      position:relative; z-index:1;
+      max-width:1100px; margin:0 auto;
+      padding:3rem;
+    }
+
+    .school-card {
+      background:var(--ink); color:var(--cream);
+      border-radius:12px; padding:2.5rem 3rem;
+      display:grid; grid-template-columns:auto 1fr auto;
+      gap:2rem; align-items:center;
+      position:relative; overflow:hidden;
+    }
+    .school-card::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at 0% 50%, rgba(196,80,26,0.2) 0%, transparent 55%),
+                 radial-gradient(ellipse at 100% 0%, rgba(42,92,138,0.15) 0%, transparent 50%);
+      pointer-events:none;
+    }
+    .school-logo-area { position:relative; z-index:1; }
+    .school-logo-box {
+      width:64px; height:64px;
+      border:2px solid rgba(255,255,255,0.15); border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(255,255,255,0.08); font-size:2rem;
+    }
+    .school-info { position:relative; z-index:1; }
+    .school-name { font-family:var(--ff-head); font-size:1.3rem; font-weight:700; margin-bottom:0.25rem; }
+    .school-sub { font-size:0.82rem; color:rgba(245,240,232,0.65); font-weight:300; line-height:1.6; }
+    .school-meta { position:relative; z-index:1; text-align:right; }
+    .school-meta-item { margin-bottom:0.5rem; }
+    .school-meta-label { font-family:var(--ff-mono); font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,240,232,0.45); }
+    .school-meta-value { font-size:0.85rem; color:var(--cream); font-weight:500; }
+
+    /* MAIN CONTENT */
+    .main-wrap {
+      position:relative; z-index:1;
+      max-width:1100px; margin:0 auto;
+      padding:0 3rem 3rem;
+    }
+
+    .section-label {
+      font-family:var(--ff-mono); font-size:0.68rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--muted);
+      padding:0.5rem 0; border-top:2px solid var(--ink);
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:1.5rem;
+    }
+    .section-label strong { font-family:var(--ff-head); font-size:1.05rem; font-weight:700; color:var(--ink); letter-spacing:0; text-transform:none; }
+
+    /* JOURNEY CARDS */
+    .journey-grid {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:1.5px; background:var(--line);
+      border:1px solid var(--line); border-radius:12px; overflow:hidden;
+      margin-bottom:3rem;
+    }
+    .journey-card {
+      background:var(--warm); padding:2rem 1.8rem;
+      transition:background 0.2s;
+    }
+    .journey-card:hover { background:white; }
+    .journey-year {
+      font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--accent); margin-bottom:0.7rem;
+    }
+    .journey-title { font-family:var(--ff-head); font-size:1.1rem; font-weight:700; margin-bottom:0.7rem; }
+    .journey-desc { font-size:0.82rem; color:var(--muted); line-height:1.65; font-weight:300; }
+
+    /* INTERESTS */
+    .interests-grid {
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:1.5px; background:var(--line);
+      border:1px solid var(--line); border-radius:12px; overflow:hidden;
+      margin-bottom:3rem;
+    }
+    .interest-card {
+      background:var(--warm); padding:1.8rem 1.5rem;
+      text-align:center; transition:background 0.2s;
+    }
+    .interest-card:hover { background:white; }
+    .interest-emoji { font-size:1.8rem; margin-bottom:0.7rem; }
+    .interest-name { font-size:0.85rem; font-weight:500; color:var(--ink); margin-bottom:0.35rem; }
+    .interest-sub { font-size:0.75rem; color:var(--muted); font-weight:300; line-height:1.5; }
+
+    /* ASPIRATIONS */
+    .aspiration-block {
+      border:1px solid var(--line); border-radius:12px;
+      overflow:hidden; margin-bottom:3rem;
+    }
+    .aspiration-header {
+      background:var(--ink); color:var(--cream);
+      padding:1.5rem 2rem;
+      display:flex; align-items:center; gap:1rem;
+      position:relative; overflow:hidden;
+    }
+    .aspiration-header::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at 100% 0%, rgba(196,80,26,0.2) 0%, transparent 50%);
+    }
+    .aspiration-icon { font-size:1.5rem; position:relative; z-index:1; }
+    .aspiration-title { font-family:var(--ff-head); font-size:1.1rem; font-weight:700; position:relative; z-index:1; }
+    .aspiration-body { padding:2rem; display:grid; grid-template-columns:1fr 1fr; gap:2rem; background:var(--warm); }
+    .aspiration-col {}
+    .aspiration-col-title { font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:0.8rem; }
+    .aspiration-text { font-size:0.88rem; color:var(--ink2); line-height:1.7; font-weight:300; }
+    .aspiration-list { list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+    .aspiration-list li { font-size:0.85rem; color:var(--ink2); line-height:1.5; padding-left:1rem; position:relative; }
+    .aspiration-list li::before { content:'→'; position:absolute; left:0; color:var(--accent); font-family:var(--ff-mono); font-size:0.75rem; }
+
+    /* TUTOR SECTION */
+    .tutor-section { margin-bottom:3rem; }
+    .tutor-card {
+      border:1px solid var(--line); border-radius:12px;
+      background:var(--warm); padding:2rem 2.5rem;
+      display:flex; align-items:center; gap:2rem;
+      transition:background 0.2s;
+    }
+    .tutor-card:hover { background:white; }
+    .tutor-avatar {
+      width:56px; height:56px; flex-shrink:0;
+      border:1.5px solid var(--line); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      background:white; font-size:1.5rem;
+    }
+    .tutor-info {}
+    .tutor-name { font-family:var(--ff-head); font-size:1.1rem; font-weight:700; margin-bottom:0.2rem; }
+    .tutor-role { font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; }
+    .tutor-desc { font-size:0.82rem; color:var(--muted); font-weight:300; line-height:1.5; }
+
+    /* QUOTE */
+    .quote-block {
+      border-left:3px solid var(--accent);
+      padding:1.5rem 2rem;
+      margin-bottom:3rem;
+      background:rgba(196,80,26,0.04);
+      border-radius:0 8px 8px 0;
+    }
+    .quote-text { font-family:var(--ff-head); font-size:1.2rem; font-style:italic; color:var(--ink); line-height:1.6; margin-bottom:0.8rem; }
+    .quote-attr { font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+
+    /* REVEAL */
+    .reveal { opacity:0; transform:translateY(18px); transition:opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    .fade-in { opacity:0; transform:translateY(20px); animation:fadeIn 0.7s ease forwards; }
+    @keyframes fadeIn { to { opacity:1; transform:none; } }
+    .delay-1 { animation-delay:0.1s; }
+    .delay-2 { animation-delay:0.2s; }
+    .delay-3 { animation-delay:0.35s; }
+
+    /* FOOTER */
+    footer {
+      position:relative; z-index:1;
+      border-top:1px solid var(--line);
+      padding:2rem 3rem;
+      display:flex; justify-content:space-between; align-items:center;
+      font-family:var(--ff-mono); font-size:0.68rem; color:var(--muted); letter-spacing:0.06em;
+    }
+
+    @media(max-width:900px) {
+      nav { padding:1rem 1.5rem; }
+      .profile-hero { grid-template-columns:1fr; padding:7rem 1.5rem 3rem; gap:2.5rem; }
+      .school-banner { padding:2rem 1.5rem; }
+      .school-card { grid-template-columns:1fr; text-align:center; }
+      .school-meta { text-align:center; }
+      .main-wrap { padding:0 1.5rem 3rem; }
+      .journey-grid { grid-template-columns:1fr; }
+      .interests-grid { grid-template-columns:repeat(2,1fr); }
+      .aspiration-body { grid-template-columns:1fr; }
+      footer { flex-direction:column; gap:0.5rem; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand"><strong>FSL</strong> / Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="timeline.html">Timeline</a></li>
+    <li><a href="competenze.html">Competenze</a></li>
+    <li><a href="profilo.html" class="active">Profilo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO PROFILE -->
+<div class="profile-hero">
+  <div class="profile-left">
+    <div class="page-eyebrow fade-in">V ITIA C · ITT Panetti-Pitagora</div>
+    <h1 class="profile-name fade-in delay-1">
+      Il mio<br><em>Profilo</em>
+    </h1>
+    <div class="profile-role fade-in delay-1">Studente · Indirizzo Informatico</div>
+    <p class="profile-bio fade-in delay-2">
+      Frequento la classe <strong>V ITIA C</strong> dell'ITT Panetti-Pitagora di Bari, indirizzo Informatico e Telecomunicazioni. 
+      Nel triennio ho partecipato attivamente ai percorsi di <strong>Formazione Scuola Lavoro</strong>, accumulando 149 ore 
+      di esperienze con multinazionali, startup, università e istituzioni pubbliche. Ogni progetto ha lasciato 
+      qualcosa: una skill, una visione, una direzione in più.
+    </p>
+    <div class="profile-tags fade-in delay-3">
+      <span class="profile-tag">Informatica & TLC</span>
+      <span class="profile-tag">Web Development</span>
+      <span class="profile-tag">AI & Digitale</span>
+      <span class="profile-tag">Problem Solving</span>
+      <span class="profile-tag">Bari, Puglia</span>
+    </div>
+  </div>
+
+  <div class="profile-right fade-in delay-2">
+    <div class="id-card">
+      <div class="id-row">
+        <span class="id-key">Istituto</span>
+        <span class="id-val">ITT Panetti-Pitagora</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Sede</span>
+        <span class="id-val">Via Re David 186, Bari</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Indirizzo</span>
+        <span class="id-val">Informatica e Telecomunicazioni</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Classe</span>
+        <span class="id-val accent">V ITIA C</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Anno Scolastico</span>
+        <span class="id-val">2025 / 2026</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Tutor FSL</span>
+        <span class="id-val accent2">Prof.ssa G. Cantalice</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Ore totali FSL</span>
+        <span class="id-val accent">149 ore</span>
+      </div>
+      <div class="id-row">
+        <span class="id-key">Stato percorso</span>
+        <span class="id-val" style="color:var(--accent3)">✓ Completato</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHOOL BANNER -->
+<div class="school-banner reveal">
+  <div class="school-card">
+    <div class="school-logo-area">
+      <div class="school-logo-box">🏫</div>
+    </div>
+    <div class="school-info">
+      <div class="school-name">ITT "Panetti-Pitagora"</div>
+      <div class="school-sub">Istituto Tecnico Tecnologico Statale · Bari<br>Indirizzo Informatica e Telecomunicazioni · Ambito Territoriale N°01</div>
+    </div>
+    <div class="school-meta">
+      <div class="school-meta-item">
+        <div class="school-meta-label">Cod. Istituto</div>
+        <div class="school-meta-value">BATF230001</div>
+      </div>
+      <div class="school-meta-item">
+        <div class="school-meta-label">Sito Web</div>
+        <div class="school-meta-value">panettipitagora.edu.it</div>
+      </div>
+      <div class="school-meta-item">
+        <div class="school-meta-label">Percorso</div>
+        <div class="school-meta-value">2021 → 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- JOURNEY -->
+  <div class="section-label reveal">
+    <strong>Il Mio Percorso</strong>
+    <span>anno per anno</span>
+  </div>
+  <div class="journey-grid reveal">
+    <div class="journey-card">
+      <div class="journey-year">Classe III · 2023/24</div>
+      <div class="journey-title">I Primi Passi nel Mondo del Lavoro</div>
+      <div class="journey-desc">Il primo anno FSL è stato un'immersione: dalla sicurezza sul lavoro all'IBM SkillBuild, passando per Accenture JobLab e il programma di autoimprenditorialità con Sprint School. Ho capito cosa significa lavorare in team su scadenze reali.</div>
+    </div>
+    <div class="journey-card">
+      <div class="journey-year">Classe IV · 2024/25</div>
+      <div class="journey-title">Digitale, AI e Competenze Trasversali</div>
+      <div class="journey-desc">Il secondo anno ha approfondito il digitale con Apulia Digital (AI nella comunicazione) e LV8/Fondazione Vodafone (DigComp 2.2). Ho iniziato a connettere le competenze tecniche con quelle orientative, cominciando a immaginare il mio futuro professionale.</div>
+    </div>
+    <div class="journey-card">
+      <div class="journey-year">Classe V · 2025/26</div>
+      <div class="journey-title">Visione Completa e Orientamento</div>
+      <div class="journey-desc">L'anno più denso: Oracle Academy, Leonardo SpA, Auriga SpA, Mind the Web, Sprint School hackathon e una serie di eventi di orientamento universitario. Sono uscito con una visione chiara delle mie aspirazioni e degli strumenti per realizzarle.</div>
+    </div>
+  </div>
+
+  <!-- INTERESTS -->
+  <div class="section-label reveal">
+    <strong>Interessi & Passioni</strong>
+    <span>ciò che mi muove</span>
+  </div>
+  <div class="interests-grid reveal">
+    <div class="interest-card">
+      <div class="interest-emoji">🖥️</div>
+      <div class="interest-name">Sviluppo Software</div>
+      <div class="interest-sub">Dal frontend al database, amo costruire cose che funzionano.</div>
+    </div>
+    <div class="interest-card">
+      <div class="interest-emoji">🤖</div>
+      <div class="interest-name">Intelligenza Artificiale</div>
+      <div class="interest-sub">Strumenti AI, prompt engineering e il futuro dell'automazione.</div>
+    </div>
+    <div class="interest-card">
+      <div class="interest-emoji">✈️</div>
+      <div class="interest-name">Tecnologia Aerospaziale</div>
+      <div class="interest-sub">Il percorso con Leonardo SpA ha acceso la curiosità per questo settore.</div>
+    </div>
+    <div class="interest-card">
+      <div class="interest-emoji">🚀</div>
+      <div class="interest-name">Startup & Innovazione</div>
+      <div class="interest-sub">Business planning, hackathon e l'idea di costruire qualcosa dal niente.</div>
+    </div>
+  </div>
+
+  <!-- ASPIRAZIONI -->
+  <div class="section-label reveal">
+    <strong>Aspirazioni Future</strong>
+    <span>dove voglio arrivare</span>
+  </div>
+  <div class="aspiration-block reveal">
+    <div class="aspiration-header">
+      <div class="aspiration-icon">🎯</div>
+      <div class="aspiration-title">Il prossimo capitolo</div>
+    </div>
+    <div class="aspiration-body">
+      <div class="aspiration-col">
+        <div class="aspiration-col-title">Percorso universitario</div>
+        <div class="aspiration-text">
+          Dopo cinque anni all'ITT Panetti-Pitagora, il mio interesse è orientarsi verso un percorso universitario in ambito informatico o ingegneristico. 
+          I contatti con il <strong>Politecnico di Bari</strong> durante OrientaPuglia e l'evento PoliBa hanno aperto prospettive concrete. 
+          Considero anche percorsi in Ingegneria Informatica, Informatica o ambiti legati all'AI e all'innovazione tecnologica.
+        </div>
+      </div>
+      <div class="aspiration-col">
+        <div class="aspiration-col-title">Obiettivi professionali</div>
+        <ul class="aspiration-list">
+          <li>Entrare in un contesto lavorativo innovativo come Auriga SpA, Accenture o realtà simili</li>
+          <li>Sviluppare competenze avanzate in web development e database management</li>
+          <li>Approfondire l'intelligenza artificiale applicata al business</li>
+          <li>Continuare a costruire soft skill: leadership, comunicazione, team working</li>
+          <li>Contribuire a un progetto con impatto reale — tecnologia che fa la differenza</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-block reveal">
+    <div class="quote-text">"Tre anni di percorso FSL non sono stati solo ore da accumulare: sono stati incontri, sfide, fallimenti e piccole vittorie. Ogni azienda ha lasciato qualcosa. Questo portfolio è il tentativo di raccoglierle tutte."</div>
+    <div class="quote-attr">Studente · V ITIA C · A.S. 2025/26</div>
+  </div>
+
+  <!-- TUTOR -->
+  <div class="section-label reveal">
+    <strong>Tutor FSL</strong>
+    <span>referente del percorso</span>
+  </div>
+  <div class="tutor-section reveal">
+    <div class="tutor-card">
+      <div class="tutor-avatar">👩‍🏫</div>
+      <div class="tutor-info">
+        <div class="tutor-name">Prof.ssa Gabriella Cantalice</div>
+        <div class="tutor-role">Tutor FSL Interno · ITT Panetti-Pitagora</div>
+        <div class="tutor-desc">Ha coordinato l'intero percorso triennale di Formazione Scuola Lavoro per la classe V ITIA C, definendo gli obiettivi formativi in collaborazione con i tutor aziendali esterni e garantendo la qualità e la coerenza delle esperienze proposte.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<footer>
+  <span>ITT "Panetti-Pitagora" · Via Re David 186, Bari</span>
+  <span>Relazione Finale FSL · V ITIA C · A.S. 2025/26</span>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

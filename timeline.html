@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline FSL — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:  #f5f0e8;
+      --warm:   #ede8dc;
+      --ink:    #1a1610;
+      --ink2:   #3d3629;
+      --muted:  #8c7f6e;
+      --accent: #c4501a;
+      --accent2:#2a5c8a;
+      --accent3:#4a7c59;
+      --line:   rgba(26,22,16,0.12);
+      --ff-head:'Playfair Display', serif;
+      --ff-body:'DM Sans', sans-serif;
+      --ff-mono:'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--cream); color: var(--ink); font-family: var(--ff-body); overflow-x: hidden; }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+
+    /* NAV */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1rem 3rem;
+      background:rgba(245,240,232,0.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav-brand { font-family:var(--ff-mono); font-size:0.75rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; text-decoration:none; }
+    .nav-brand strong { color:var(--accent); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { font-family:var(--ff-body); font-size:0.82rem; font-weight:500; color:var(--ink2); text-decoration:none; transition:color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--accent); }
+
+    /* PAGE HEADER */
+    .page-header {
+      position:relative; z-index:1;
+      padding: 8rem 3rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--line);
+    }
+    .page-eyebrow {
+      font-family:var(--ff-mono); font-size:0.72rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--accent);
+      display:flex; align-items:center; gap:0.6rem; margin-bottom:1rem;
+    }
+    .page-eyebrow::before { content:''; width:24px; height:1px; background:var(--accent); }
+    .page-title { font-family:var(--ff-head); font-size:clamp(2.4rem,5vw,4rem); font-weight:900; line-height:1.05; }
+    .page-title em { font-style:italic; color:var(--accent); }
+    .page-desc { font-size:0.95rem; color:var(--muted); font-weight:300; line-height:1.7; max-width:500px; margin-top:1rem; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      position:relative; z-index:1;
+      max-width:1100px; margin:0 auto;
+      padding:1.5rem 3rem;
+      display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;
+      border-bottom:1px solid var(--line);
+    }
+    .filter-label { font-family:var(--ff-mono); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-right:0.3rem; }
+    .filter-btn {
+      padding:0.3rem 0.9rem;
+      font-family:var(--ff-mono); font-size:0.68rem; letter-spacing:0.06em;
+      border:1px solid var(--line);
+      border-radius:4px;
+      background:transparent; color:var(--ink2); cursor:pointer;
+      transition:all 0.2s;
+    }
+    .filter-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .filter-btn.active { background:var(--ink); color:var(--cream); border-color:var(--ink); }
+
+    /* MAIN LAYOUT */
+    .timeline-main {
+      position:relative; z-index:1;
+      max-width:1100px; margin:0 auto;
+      padding:3rem;
+    }
+
+    /* YEAR GROUP */
+    .year-group { margin-bottom:3rem; }
+    .year-label {
+      font-family:var(--ff-mono); font-size:0.7rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--muted);
+      padding:0.5rem 0; margin-bottom:1px;
+      border-top:2px solid var(--ink);
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .year-label strong { font-family:var(--ff-head); font-size:1.1rem; font-weight:700; color:var(--ink); letter-spacing:0; text-transform:none; }
+
+    /* PROJECT ROWS */
+    .project-row {
+      border-bottom:1px solid var(--line);
+      overflow:hidden;
+      transition:background 0.2s;
+    }
+    .project-row:hover { background:rgba(255,255,255,0.5); }
+    .project-row.open { background:white; }
+
+    .project-header {
+      display:grid;
+      grid-template-columns: 1fr auto auto auto;
+      align-items:center;
+      gap:1rem;
+      padding:1.1rem 1rem;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .project-title-wrap {}
+    .project-title { font-family:var(--ff-body); font-size:0.95rem; font-weight:500; color:var(--ink); }
+    .project-company { font-family:var(--ff-mono); font-size:0.68rem; color:var(--accent); letter-spacing:0.06em; margin-top:0.15rem; }
+
+    .proj-badge {
+      font-family:var(--ff-mono); font-size:0.62rem; letter-spacing:0.06em;
+      padding:0.2rem 0.6rem; border-radius:3px; white-space:nowrap;
+    }
+    .badge-online   { background:rgba(42,92,138,0.1);  color:var(--accent2);  border:1px solid rgba(42,92,138,0.2); }
+    .badge-presence { background:rgba(74,124,89,0.1);  color:var(--accent3);  border:1px solid rgba(74,124,89,0.2); }
+    .badge-hybrid   { background:rgba(196,80,26,0.1);  color:var(--accent);   border:1px solid rgba(196,80,26,0.2); }
+
+    .proj-hours {
+      font-family:var(--ff-mono); font-size:0.7rem; color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .proj-toggle {
+      width:24px; height:24px;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--muted); transition:transform 0.25s, color 0.2s;
+      font-size:0.9rem;
+    }
+    .project-row.open .proj-toggle { transform:rotate(45deg); color:var(--accent); }
+
+    /* EXPANDED DETAIL */
+    .project-detail {
+      display:none;
+      padding:0 1rem 1.5rem;
+      grid-template-columns:1fr 1fr;
+      gap:1.5rem;
+    }
+    .project-row.open .project-detail { display:grid; }
+
+    .detail-block {}
+    .detail-block-label {
+      font-family:var(--ff-mono); font-size:0.63rem; letter-spacing:0.12em;
+      text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem;
+    }
+    .detail-text { font-size:0.85rem; color:var(--ink2); line-height:1.7; font-weight:300; }
+    .tag-list { display:flex; flex-wrap:wrap; gap:0.35rem; }
+    .tag {
+      font-family:var(--ff-mono); font-size:0.62rem; letter-spacing:0.04em;
+      padding:0.2rem 0.55rem;
+      border:1px solid var(--line); border-radius:3px;
+      background:var(--warm); color:var(--ink2);
+    }
+    .tag.skill { border-color:rgba(74,124,89,0.25); background:rgba(74,124,89,0.06); color:var(--accent3); }
+
+    /* FOOTER */
+    footer {
+      position:relative; z-index:1;
+      border-top:1px solid var(--line);
+      padding:2rem 3rem;
+      display:flex; justify-content:space-between; align-items:center;
+      font-family:var(--ff-mono); font-size:0.68rem; color:var(--muted); letter-spacing:0.06em;
+    }
+
+    .reveal { opacity:0; transform:translateY(16px); transition:opacity 0.5s ease, transform 0.5s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+
+    @media(max-width:768px) {
+      nav { padding:1rem 1.5rem; }
+      .page-header { padding:7rem 1.5rem 2rem; }
+      .filter-bar { padding:1.2rem 1.5rem; }
+      .timeline-main { padding:2rem 1.5rem; }
+      .project-header { grid-template-columns:1fr auto auto; }
+      .proj-badge { display:none; }
+      .project-detail { grid-template-columns:1fr; }
+      footer { flex-direction:column; gap:0.5rem; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand"><strong>FSL</strong> / Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="timeline.html" class="active">Timeline</a></li>
+    <li><a href="competenze.html">Competenze</a></li>
+    <li><a href="profilo.html">Profilo</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-eyebrow">Percorso triennale FSL</div>
+  <h1 class="page-title">Timeline<br>dei <em>Progetti</em></h1>
+  <p class="page-desc">23 esperienze con aziende, enti e università dal 2023 al 2026. Clicca su una riga per espandere i dettagli.</p>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filtra:</span>
+  <button class="filter-btn active" data-filter="all">Tutti</button>
+  <button class="filter-btn" data-filter="online">Online</button>
+  <button class="filter-btn" data-filter="presence">In Presenza</button>
+  <button class="filter-btn" data-filter="hybrid">Ibrido</button>
+</div>
+
+<div class="timeline-main">
+
+  <!-- ANNO III -->
+  <div class="year-group reveal">
+    <div class="year-label">
+      <strong>2023 — 2024</strong>
+      <span>Classe III</span>
+    </div>
+    <div id="year-2023"></div>
+  </div>
+
+  <!-- ANNO IV -->
+  <div class="year-group reveal">
+    <div class="year-label">
+      <strong>2024 — 2025</strong>
+      <span>Classe IV</span>
+    </div>
+    <div id="year-2024"></div>
+  </div>
+
+  <!-- ANNO V -->
+  <div class="year-group reveal">
+    <div class="year-label">
+      <strong>2025 — 2026</strong>
+      <span>Classe V</span>
+    </div>
+    <div id="year-2025"></div>
+  </div>
+
+</div>
+
+<footer>
+  <span>ITT "Panetti-Pitagora" · Bari · A.S. 2025/26</span>
+  <span>Relazione Finale FSL · V ITIA C</span>
+</footer>
+
+<script>
+const projects = {
+  "2023": [
+    { id:"p1", title:"Sicurezza sui Luoghi di Lavoro", company:"ANFOS", type:"online", hours:4, disciplines:["Diritto e Normativa (D.Lgs 81/08)"], description:"Percorso in modalità e-learning dedicato alla sicurezza nei luoghi di lavoro. Comprende lo studio dei contenuti normativi, il superamento di un test finale e il conseguimento di un attestato di frequenza ufficiale.", skills:["Normativa sicurezza sul lavoro","D.Lgs 81/08","E-learning autonomo"] },
+    { id:"p2", title:"IBM SkillBuild — Corsi Online", company:"IBM", type:"online", hours:"Variabile", disciplines:["Informatica","TIPSIT","Sistemi e Reti"], description:"Webinar e utilizzo della piattaforma IBM SkillBuild per la formazione tecnica. Accesso a percorsi formativi certificati su tematiche informatiche e tecnologiche con rilascio di certificazione digitale.", skills:["Cloud computing","Piattaforme IBM","Certificazione digitale","Autoformazione"] },
+    { id:"p3", title:"Autoimprenditorialità", company:"SPRINT SCHOOL", type:"hybrid", hours:15, disciplines:["Comunicazione","Diritto","Lettere"], description:"Programma dedicato all'autoimprenditorialità giovanile. Gli studenti hanno sviluppato idee imprenditoriali, creato un progetto di startup e partecipato a una competizione finale presentando il proprio pitch davanti a una giuria.", skills:["Business planning","Pitching","Creatività","Team working","Comunicazione"] },
+    { id:"p4", title:"Accenture JobLab", company:"ACCENTURE", type:"hybrid", hours:18, disciplines:["Informatica","TIPSIT"], description:"Percorso hands-on con tutor aziendali esperti: 2 ore di formazione online asincrone e 16 ore in presenza nei laboratori informatici. Apprendimento delle basi del web development con focus su JavaScript tramite metodologia learning by doing.", skills:["JavaScript","Web Development","Problem solving","Learning by doing"] }
+  ],
+  "2024": [
+    { id:"p5", title:"Next Level — Competenze Digitali", company:"LV8 / Fondazione Vodafone", type:"hybrid", hours:8, disciplines:["Competenze digitali","Soft Skills","Informatica","TIPSIT"], description:"Learning app per le competenze digitali con rilascio di 3 OpenBadge in linea con il quadro europeo DigComp 2.2. Percorso orientato al potenziamento delle competenze digitali e orientative.", skills:["DigComp 2.2","OpenBadge","Competenze digitali","Soft skills"] },
+    { id:"p6", title:"Orientamento Post-Scolastico", company:"MERMEC / ANGELSTAR", type:"presence", hours:2, disciplines:["Informatica","Telecomunicazioni","Sistemi e Reti"], description:"Open day in presenza presso l'Aula Magna. Presentazione della joint venture internazionale specializzata in soluzioni ERTMS per il segnalamento ferroviario. Focus sulle posizioni lavorative e profili professionali richiesti.", skills:["Orientamento professionale","Networking","Settore ferroviario tech"] },
+    { id:"p7", title:"Applicazioni di AI nella Comunicazione", company:"APULIA DIGITAL", type:"presence", hours:16, disciplines:["Informatica","TIPSIT","Lettere"], description:"Lezioni frontali e applicazioni pratiche dell'intelligenza artificiale per implementare e gestire tecnologie e piattaforme AI. Laboratorio pratico per utilizzare strumenti AI nel contesto della comunicazione digitale.", skills:["Intelligenza Artificiale","Prompt engineering","AI tools","Comunicazione digitale"] },
+    { id:"p8", title:"Accenture JobLab", company:"ACCENTURE", type:"hybrid", hours:18, disciplines:["Informatica","TIPSIT"], description:"Seconda edizione del percorso JobLab: 2 ore online asincrone + 16 ore in presenza. Approfondimento delle tecniche di sviluppo web con metodologia learning by doing sotto la guida di tutor aziendali.", skills:["JavaScript avanzato","Web development","Team working","Problem solving"] }
+  ],
+  "2025": [
+    { id:"p9", title:"Open Day — Professioni e CV", company:"OPEN FIBER (ELIS)", type:"online", hours:2, disciplines:["Sistemi e Reti","Lettere"], description:"Webinar interattivo sulle professionalità e posizioni lavorative in Open Fiber. Analisi pratica di come redigere un CV efficace e simulazione di un colloquio selettivo.", skills:["Stesura CV","Simulazione colloquio","Orientamento lavoro"] },
+    { id:"p10", title:"Orientamento Post-Scolastico", company:"MERMEC / ANGELSTAR", type:"presence", hours:2, disciplines:["Informatica","Telecomunicazioni","Sistemi e Reti"], description:"Presentazione in Aula Magna della joint venture Mermec/AngelStar, azienda di ingegneria internazionale specializzata in soluzioni bordo per segnalamento e controllo ERTMS per ferrovie mondiali.", skills:["Settore aerospaziale/ferroviario","Networking","Orientamento"] },
+    { id:"p11", title:"Mind the Web — Educazione ai Media Digitali", company:"TIM / IDMO / MIM", type:"online", hours:8, disciplines:["Informatica","TIPSIT","Lettere","Storia"], description:"Ciclo di 4 webinar interattivi (2h ciascuno) su media digitali e intelligenza artificiale: bias cognitivi, disinformazione digitale, dieta mediatica e metodo scientifico applicato al digitale.", skills:["Media literacy","Pensiero critico","Disinformazione","AI etica","Metodo scientifico"] },
+    { id:"p12", title:"OrientaPuglia — X Edizione", company:"ASTER PUGLIA", type:"presence", hours:5, disciplines:["Competenze orientative","Soft Skills"], description:"Fiera regionale per l'Orientamento Scolastico, Universitario e Professionale. Contatto diretto con università italiane ed estere, istituti di formazione superiore e scuole di specializzazione.", skills:["Orientamento universitario","Soft skills","Networking"] },
+    { id:"p13", title:"Il Futuro Ti Assomiglia", company:"Fondazione MEGAMARK", type:"presence", hours:5, disciplines:["Competenze orientative","Soft Skills"], description:"Seminario motivazionale con relatori di spicco (Università Bocconi, Geopop, divulgatori scientifici). Temi chiave: autostima, gestione ansia e stress, orientamento nelle scelte future.", skills:["Autostima","Gestione stress","Orientamento","Motivazione"] },
+    { id:"p14", title:"Salone dello Studente — Campus Bari", company:"CAMPUS BARI", type:"presence", hours:4, disciplines:["Competenze orientative","Soft Skills"], description:"Manifestazione sull'orientamento all'università e alle professioni presso l'Ente Fiera del Levante di Bari.", skills:["Orientamento professionale","Colloqui aziendali","Networking"] },
+    { id:"p15", title:"Orientamento PoliBa", company:"Politecnico di Bari", type:"presence", hours:2, disciplines:["Competenze orientative","Soft Skills"], description:"Evento di orientamento universitario presso l'Aula Magna Attilio Alto. Presentazione dell'offerta formativa di tutti i Dipartimenti, corsi di laurea, servizi e attività extracurriculari.", skills:["Orientamento universitario","STEM","Pianificazione carriera"] },
+    { id:"p16", title:"Visita Guidata Aziendale", company:"AURIGA SpA", type:"presence", hours:5, disciplines:["Competenze orientative","Soft Skills"], description:"Visita alla sede di Bari di Auriga SpA, leader italiano nel software per la banca omnicanale, presente in oltre 60 paesi.", skills:["Fintech","Software banking","Orientamento aziendale","Networking"] },
+    { id:"p17", title:"Oracle Web Application Academy", company:"CivicaMente Srl", type:"online", hours:16, disciplines:["Informatica"], description:"Percorso esclusivo e-learning su Database Oracle e Oracle APEX. SQL, organizzazione di dati relazionali, interrogazione di tabelle e sviluppo di applicazioni web low-code.", skills:["Oracle SQL","Oracle APEX","Database relazionali","Web App development","Low-code"] },
+    { id:"p18", title:"In Volo con Leonardo", company:"CivicaMente Srl / Leonardo SpA", type:"online", hours:25, disciplines:["Informatica","Sistemi e Reti"], description:"Percorso e-learning su innovazione tecnologica e settore aerospaziale in collaborazione con Leonardo SpA. 6 unità multimediali + quiz + Project Work finale. Certificazione inclusa.", skills:["Aerospazio","Innovazione tecnologica","Project work","Certificazione","Problem solving"] },
+    { id:"p19", title:"Accenture JobLab", company:"ACCENTURE", type:"hybrid", hours:18, disciplines:["Informatica","TIPSIT"], description:"Terza edizione del percorso JobLab per i 10 studenti più meritevoli selezionati. Formazione avanzata in presenza con 3 tutor aziendali esperti su linguaggi web, in particolare JavaScript.", skills:["JavaScript avanzato","Frontend development","Soft skills","Learning by doing"] },
+    { id:"p20", title:"Autoimprenditorialità & Soft Skills", company:"SPRINT SCHOOL", type:"hybrid", hours:6, disciplines:["Competenze orientative","Soft Skills"], description:"Hackathon e workshop sull'imprenditorialità giovanile: analisi di mercato, MVP, pitch e startup. Focus su intelligenza emotiva, team working, gestione del tempo e problem solving.", skills:["Startup","Hackathon","Pitching","Team working","Intelligenza emotiva"] },
+    { id:"p21", title:"Fidelis — Forze Armate", company:"GPOI", type:"presence", hours:1, disciplines:["Competenze orientative","Soft Skills"], description:"Presentazione delle possibili carriere nelle Forze Armate italiane, percorsi di accesso e opportunità di sviluppo professionale.", skills:["Orientamento professionale"] },
+    { id:"p22", title:"Università eCampus", company:"eCampus", type:"presence", hours:1, disciplines:["Competenze orientative"], description:"Presentazione dei corsi di laurea dell'Università telematica eCampus e delle opportunità offerte dalla formazione universitaria a distanza.", skills:["Orientamento universitario","E-learning universitario"] },
+    { id:"p23", title:"Università Bona Sforza", company:"Università Bona Sforza", type:"presence", hours:1, disciplines:["Competenze orientative"], description:"Presentazione dell'offerta formativa e dei corsi di laurea disponibili presso l'Università Bona Sforza.", skills:["Orientamento universitario"] }
+  ]
+};
+
+const typeLabel = { online:"Online", presence:"In Presenza", hybrid:"Ibrido" };
+const typeBadge = { online:"badge-online", presence:"badge-presence", hybrid:"badge-hybrid" };
+
+function renderYear(data, containerId) {
+  const wrap = document.getElementById(containerId);
+  data.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'project-row';
+    row.dataset.type = p.type;
+    row.innerHTML = `
+      <div class="project-header">
+        <div class="project-title-wrap">
+          <div class="project-title">${p.title}</div>
+          <div class="project-company">${p.company}</div>
+        </div>
+        <span class="proj-badge ${typeBadge[p.type]}">${typeLabel[p.type]}</span>
+        <span class="proj-hours">⏱ ${p.hours}h</span>
+        <span class="proj-toggle">+</span>
+      </div>
+      <div class="project-detail">
+        <div class="detail-block" style="grid-column:1/-1">
+          <div class="detail-block-label">Descrizione</div>
+          <div class="detail-text">${p.description}</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-block-label">Discipline coinvolte</div>
+          <div class="tag-list">${p.disciplines.map(d=>`<span class="tag">${d}</span>`).join('')}</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-block-label">Competenze acquisite</div>
+          <div class="tag-list">${p.skills.map(s=>`<span class="tag skill">${s}</span>`).join('')}</div>
+        </div>
+      </div>
+    `;
+    row.querySelector('.project-header').addEventListener('click', () => {
+      row.classList.toggle('open');
+    });
+    wrap.appendChild(row);
+  });
+}
+
+renderYear(projects["2023"], "year-2023");
+renderYear(projects["2024"], "year-2024");
+renderYear(projects["2025"], "year-2025");
+
+// Filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.project-row').forEach(row => {
+      row.style.display = (f === 'all' || row.dataset.type === f) ? '' : 'none';
+    });
+  });
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

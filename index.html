@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio FSL — V ITIA C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #f5f0e8;
+      --warm:    #ede8dc;
+      --ink:     #1a1610;
+      --ink2:    #3d3629;
+      --muted:   #8c7f6e;
+      --accent:  #c4501a;  /* burnt orange */
+      --accent2: #2a5c8a;  /* deep navy */
+      --accent3: #4a7c59;  /* forest green */
+      --line:    rgba(26,22,16,0.12);
+      --ff-head: 'Playfair Display', serif;
+      --ff-body: 'DM Sans', sans-serif;
+      --ff-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--ff-body);
+      overflow-x: hidden;
+    }
+
+    /* Paper texture */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-brand {
+      font-family: var(--ff-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .nav-brand strong { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--ff-body);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink2);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.25s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      gap: 4rem;
+      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-left { position: relative; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-family: var(--ff-head);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.8rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 400px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+
+    .hero-pills {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .pill {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      padding: 0.3rem 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--ink2);
+      background: rgba(255,255,255,0.5);
+    }
+
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.8rem;
+      background: var(--ink);
+      color: var(--cream);
+      font-family: var(--ff-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.8rem;
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      font-family: var(--ff-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    .btn-secondary:hover { background: var(--ink); color: var(--cream); transform: translateY(-2px); }
+
+    /* ── HERO RIGHT — big stat display ── */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--line);
+    }
+    .big-stat {
+      background: var(--warm);
+      padding: 1.8rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.2s;
+    }
+    .big-stat:hover { background: white; }
+    .big-stat-num {
+      font-family: var(--ff-head);
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .big-stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 400;
+      text-align: right;
+      max-width: 140px;
+    }
+    .big-stat-label strong { display: block; color: var(--ink2); font-weight: 500; font-size: 0.9rem; }
+
+    /* decorative number */
+    .big-stat-num span { color: var(--accent); }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      width: 100%; height: 1px;
+      background: var(--line);
+      position: relative; z-index: 1;
+    }
+
+    /* ── CARDS PREVIEW ── */
+    #preview {
+      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+    }
+
+    .preview-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1rem;
+    }
+    .preview-title {
+      font-family: var(--ff-head);
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+    .preview-link {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .preview-link:hover { text-decoration: underline; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .page-card {
+      background: var(--warm);
+      padding: 2.5rem 2rem;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.25s;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .page-card:hover { background: white; }
+    .page-card-icon {
+      width: 42px; height: 42px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      background: white;
+    }
+    .page-card-title {
+      font-family: var(--ff-head);
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .page-card-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    .page-card-cta {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: auto;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--line);
+      padding: 2rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      animation: fadeIn 0.7s ease forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; }
+      .hero-right { display: none; }
+      nav { padding: 1rem 1.5rem; }
+      #preview { padding: 3rem 1.5rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand"><strong>FSL</strong> / Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="timeline.html">Timeline</a></li>
+    <li><a href="competenze.html">Competenze</a></li>
+    <li><a href="profilo.html">Profilo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow fade-in">ITT Panetti-Pitagora · Bari</div>
+    <h1 class="hero-title fade-in delay-1">
+      Formazione<br><em>Scuola</em><br>Lavoro
+    </h1>
+    <p class="hero-desc fade-in delay-2">
+      Relazione finale del percorso triennale FSL. Tre anni di esperienze con aziende, enti e università — documentati progetto per progetto.
+    </p>
+    <div class="hero-pills fade-in delay-3">
+      <span class="pill">Classe V ITIA C</span>
+      <span class="pill">Indirizzo Informatico</span>
+      <span class="pill">Tutor: G. Cantalice</span>
+      <span class="pill">A.S. 2025/26</span>
+    </div>
+    <div class="hero-ctas fade-in delay-4">
+      <a href="timeline.html" class="btn-primary">
+        Esplora la timeline
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="profilo.html" class="btn-secondary">Chi sono</a>
+    </div>
+  </div>
+
+  <div class="hero-right fade-in delay-2">
+    <div class="big-stat">
+      <div class="big-stat-num"><span>3</span></div>
+      <div class="big-stat-label"><strong>Anni di percorso</strong>2023 → 2026</div>
+    </div>
+    <div class="big-stat">
+      <div class="big-stat-num"><span>149</span></div>
+      <div class="big-stat-label"><strong>Ore totali</strong>di formazione</div>
+    </div>
+    <div class="big-stat">
+      <div class="big-stat-num"><span>14</span></div>
+      <div class="big-stat-label"><strong>Enti partner</strong>aziende & università</div>
+    </div>
+    <div class="big-stat">
+      <div class="big-stat-num"><span>6</span></div>
+      <div class="big-stat-label"><strong>Certificazioni</strong>ottenute</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SECTION CARDS -->
+<section id="preview">
+  <div class="preview-header reveal">
+    <h2 class="preview-title">Esplora il portfolio</h2>
+    <span style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;">3 sezioni</span>
+  </div>
+  <div class="card-grid reveal">
+    <a href="timeline.html" class="page-card">
+      <div class="page-card-icon">📅</div>
+      <div class="page-card-title">Timeline dei Progetti</div>
+      <div class="page-card-desc">Tutti i percorsi FSL del triennio — 23 progetti con aziende come Accenture, IBM, Oracle, Leonardo SpA e altri.</div>
+      <div class="page-card-cta">Vai alla timeline →</div>
+    </a>
+    <a href="competenze.html" class="page-card">
+      <div class="page-card-icon">🧠</div>
+      <div class="page-card-title">Competenze Acquisite</div>
+      <div class="page-card-desc">Mappa delle skill tecniche e trasversali sviluppate durante il percorso: dall'informatica alle soft skill aziendali.</div>
+      <div class="page-card-cta">Vai alle competenze →</div>
+    </a>
+    <a href="profilo.html" class="page-card">
+      <div class="page-card-icon">👤</div>
+      <div class="page-card-title">Il Mio Profilo</div>
+      <div class="page-card-desc">Chi sono, i miei interessi, le mie aspirazioni e il percorso che mi ha portato fin qui.</div>
+      <div class="page-card-cta">Vai al profilo →</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>ITT "Panetti-Pitagora" · Via Re David 186, Bari</span>
+  <span>Relazione Finale FSL · V ITIA C · A.S. 2025/26</span>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
