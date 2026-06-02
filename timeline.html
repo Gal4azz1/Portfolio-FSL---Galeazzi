@@ -120,7 +120,19 @@
       user-select:none;
     }
 
-    .project-title-wrap {}
+    .project-title-wrap { display:flex; align-items:center; gap:0.85rem; }
+    .company-logo {
+      width:32px; height:32px; flex-shrink:0;
+      border:1px solid var(--line); border-radius:7px;
+      background:white; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.9rem;
+    }
+    .company-logo img {
+      width:22px; height:22px; object-fit:contain;
+      border-radius:3px;
+    }
+    .project-title-text {}
     .project-title { font-family:var(--ff-body); font-size:0.95rem; font-weight:500; color:var(--ink); }
     .project-company { font-family:var(--ff-mono); font-size:0.68rem; color:var(--accent); letter-spacing:0.06em; margin-top:0.15rem; }
 
@@ -181,6 +193,113 @@
     .reveal { opacity:0; transform:translateY(16px); transition:opacity 0.5s ease, transform 0.5s ease; }
     .reveal.visible { opacity:1; transform:none; }
 
+    /* ── VISUAL TIMELINE ── */
+    .vis-outer {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 3rem 3rem 1.5rem;
+    }
+    .vis-scroll {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line) transparent;
+    }
+    .vis-scroll::-webkit-scrollbar { height: 4px; }
+    .vis-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+    .vis-track {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: max-content;
+      height: 260px;
+    }
+    .vis-track::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 50%; height: 5px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 55%, var(--accent3) 100%);
+      border-radius: 3px;
+      z-index: 0;
+    }
+    /* YEAR MARKER */
+    .vn-year-marker {
+      position: relative;
+      width: 16px; flex-shrink: 0;
+      height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 3;
+      margin: 0 8px;
+    }
+    .ym-bar {
+      width: 3px; height: 100%;
+      background: var(--ink); opacity: 0.3;
+      border-radius: 2px;
+    }
+    .ym-label {
+      position: absolute;
+      top: 10px; left: 14px;
+      font-family: var(--ff-mono);
+      font-size: 0.58rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      white-space: nowrap; line-height: 1.5;
+    }
+    .ym-label strong {
+      display: block; font-family: var(--ff-head);
+      font-size: 0.9rem; font-weight: 700;
+      color: var(--ink); text-transform: none; letter-spacing: 0;
+    }
+    /* NODE */
+    .vn {
+      position: relative; width: 84px; flex-shrink: 0;
+      height: 100%; display: flex;
+      align-items: center; justify-content: center; z-index: 1;
+    }
+    .vn::before {
+      content: ''; position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--cream); border: 2px solid var(--ink); z-index: 2;
+    }
+    .vbubble {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 3px solid var(--cream);
+      box-shadow: 0 3px 12px rgba(26,22,16,0.2);
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      overflow: hidden; position: absolute; z-index: 3;
+    }
+    .vbubble:hover { transform: scale(1.14); box-shadow: 0 6px 20px rgba(26,22,16,0.3); }
+    .vbubble img { width: 30px; height: 30px; object-fit: contain; border-radius: 3px; }
+    .vc1 { background: var(--accent); }
+    .vc2 { background: var(--accent2); }
+    .vc3 { background: var(--accent3); }
+    .vc4 { background: var(--ink); }
+    .vn.up .vbubble { top: calc(50% - 52px - 26px); }
+    .vn.up .vstem   { top: calc(50% - 26px); height: 26px; }
+    .vn.up .vlbl    { top: calc(50% + 14px); }
+    .vn.dn .vbubble { bottom: calc(50% - 52px - 26px); }
+    .vn.dn .vstem   { bottom: calc(50% - 26px); height: 26px; }
+    .vn.dn .vlbl    { bottom: calc(50% + 14px); }
+    .vstem {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      width: 2px; background: var(--ink); opacity: 0.18; z-index: 1;
+    }
+    .vlbl {
+      position: absolute; text-align: center; width: 80px; z-index: 3;
+    }
+    .vlbl strong {
+      display: block; font-family: var(--ff-body);
+      font-size: 0.65rem; font-weight: 500;
+      color: var(--ink2); line-height: 1.3;
+    }
+    @media(max-width:768px) {
+      .vis-outer { padding: 2rem 1.5rem 1rem; }
+    }
+
     @media(max-width:768px) {
       nav { padding:1rem 1.5rem; }
       .page-header { padding:7rem 1.5rem 2rem; }
@@ -209,6 +328,241 @@
   <h1 class="page-title">Timeline<br>dei <em>Progetti</em></h1>
   <p class="page-desc">23 esperienze con aziende, enti e università dal 2023 al 2026. Clicca su una riga per espandere i dettagli.</p>
 </div>
+
+<!-- VISUAL TIMELINE -->
+<div class="vis-outer">
+  <div class="vis-scroll">
+    <div class="vis-track">
+
+      <!-- ═══ ANNO III 2023/24 ═══ -->
+      <div class="vn-year-marker">
+        <div class="ym-bar"></div>
+        <div class="ym-label">Classe III<br><strong>2023/24</strong></div>
+      </div>
+
+      <!-- ANFOS up -->
+      <div class="vn up">
+        <a class="vbubble vc1" href="#year-2023" title="ANFOS — Sicurezza">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=anfos.it" alt="ANFOS" onerror="this.parentNode.style.background='var(--accent)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>ANFOS</strong></div>
+      </div>
+
+      <!-- IBM dn -->
+      <div class="vn dn">
+        <a class="vbubble vc2" href="#year-2023" title="IBM SkillBuild">
+          <img src="https://logo.clearbit.com/ibm.com" alt="IBM" onerror="this.parentNode.style.background='var(--accent2)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>IBM</strong></div>
+      </div>
+
+      <!-- Sprint School up -->
+      <div class="vn up">
+        <a class="vbubble vc3" href="#year-2023" title="Sprint School">
+          <img src="https://logo.clearbit.com/sprintschool.it" alt="Sprint School" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Sprint School</strong></div>
+      </div>
+
+      <!-- Accenture III dn -->
+      <div class="vn dn">
+        <a class="vbubble vc4" href="#year-2023" title="Accenture JobLab">
+          <img src="https://logo.clearbit.com/accenture.com" alt="Accenture" onerror="this.parentNode.style.background='var(--ink)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Accenture</strong></div>
+      </div>
+
+      <!-- ═══ ANNO IV 2024/25 ═══ -->
+      <div class="vn-year-marker">
+        <div class="ym-bar"></div>
+        <div class="ym-label">Classe IV<br><strong>2024/25</strong></div>
+      </div>
+
+      <!-- Vodafone/LV8 up -->
+      <div class="vn up">
+        <a class="vbubble vc2" href="#year-2024" title="LV8 / Vodafone">
+          <img src="https://logo.clearbit.com/vodafone.it" alt="Vodafone" onerror="this.parentNode.style.background='var(--accent2)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Vodafone</strong></div>
+      </div>
+
+      <!-- Mermec dn -->
+      <div class="vn dn">
+        <a class="vbubble vc1" href="#year-2024" title="Mermec/AngelStar">
+          <img src="https://logo.clearbit.com/mermec.com" alt="Mermec" onerror="this.parentNode.style.background='var(--accent)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Mermec</strong></div>
+      </div>
+
+      <!-- Apulia Digital up -->
+      <div class="vn up">
+        <a class="vbubble vc3" href="#year-2024" title="Apulia Digital">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=apuliadigital.it" alt="Apulia Digital" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Apulia Digital</strong></div>
+      </div>
+
+      <!-- Accenture IV dn -->
+      <div class="vn dn">
+        <a class="vbubble vc4" href="#year-2024" title="Accenture JobLab IV">
+          <img src="https://logo.clearbit.com/accenture.com" alt="Accenture" onerror="this.parentNode.style.background='var(--ink)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Accenture</strong></div>
+      </div>
+
+      <!-- ═══ ANNO V 2025/26 ═══ -->
+      <div class="vn-year-marker">
+        <div class="ym-bar"></div>
+        <div class="ym-label">Classe V<br><strong>2025/26</strong></div>
+      </div>
+
+      <!-- Open Fiber up -->
+      <div class="vn up">
+        <a class="vbubble vc2" href="#year-2025" title="Open Fiber">
+          <img src="https://logo.clearbit.com/openfiber.it" alt="Open Fiber" onerror="this.parentNode.style.background='var(--accent2)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Open Fiber</strong></div>
+      </div>
+
+      <!-- Mermec V dn -->
+      <div class="vn dn">
+        <a class="vbubble vc1" href="#year-2025" title="Mermec/AngelStar">
+          <img src="https://logo.clearbit.com/mermec.com" alt="Mermec" onerror="this.parentNode.style.background='var(--accent)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Mermec</strong></div>
+      </div>
+
+      <!-- TIM up -->
+      <div class="vn up">
+        <a class="vbubble vc1" href="#year-2025" title="Mind the Web / TIM">
+          <img src="https://logo.clearbit.com/tim.it" alt="TIM" onerror="this.parentNode.style.background='var(--accent)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>TIM</strong></div>
+      </div>
+
+      <!-- Aster Puglia dn -->
+      <div class="vn dn">
+        <a class="vbubble vc3" href="#year-2025" title="Aster Puglia">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=asterpuglia.it" alt="Aster Puglia" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Aster Puglia</strong></div>
+      </div>
+
+      <!-- Megamark up -->
+      <div class="vn up">
+        <a class="vbubble vc2" href="#year-2025" title="Fondazione Megamark">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=megamark.it" alt="Megamark" onerror="this.parentNode.style.background='var(--accent2)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Megamark</strong></div>
+      </div>
+
+      <!-- Campus Bari dn -->
+      <div class="vn dn">
+        <a class="vbubble vc4" href="#year-2025" title="Campus Bari">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=campusbari.it" alt="Campus Bari" onerror="this.parentNode.style.background='var(--ink)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Campus Bari</strong></div>
+      </div>
+
+      <!-- PoliBa up -->
+      <div class="vn up">
+        <a class="vbubble vc3" href="#year-2025" title="Politecnico di Bari">
+          <img src="https://logo.clearbit.com/poliba.it" alt="PoliBa" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>PoliBa</strong></div>
+      </div>
+
+      <!-- Auriga dn -->
+      <div class="vn dn">
+        <a class="vbubble vc2" href="#year-2025" title="Auriga SpA">
+          <img src="https://logo.clearbit.com/aurigaspa.com" alt="Auriga" onerror="this.parentNode.style.background='var(--accent2)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Auriga SpA</strong></div>
+      </div>
+
+      <!-- Oracle up -->
+      <div class="vn up">
+        <a class="vbubble vc1" href="#year-2025" title="Oracle Academy">
+          <img src="https://logo.clearbit.com/oracle.com" alt="Oracle" onerror="this.parentNode.style.background='var(--accent)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Oracle</strong></div>
+      </div>
+
+      <!-- Leonardo dn -->
+      <div class="vn dn">
+        <a class="vbubble vc3" href="#year-2025" title="Leonardo SpA">
+          <img src="https://logo.clearbit.com/leonardocompany.com" alt="Leonardo" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Leonardo SpA</strong></div>
+      </div>
+
+      <!-- Accenture V up -->
+      <div class="vn up">
+        <a class="vbubble vc4" href="#year-2025" title="Accenture JobLab V">
+          <img src="https://logo.clearbit.com/accenture.com" alt="Accenture" onerror="this.parentNode.style.background='var(--ink)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Accenture</strong></div>
+      </div>
+
+      <!-- Sprint School V dn -->
+      <div class="vn dn">
+        <a class="vbubble vc3" href="#year-2025" title="Sprint School V">
+          <img src="https://logo.clearbit.com/sprintschool.it" alt="Sprint School" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Sprint School</strong></div>
+      </div>
+
+      <!-- GPOI up -->
+      <div class="vn up">
+        <a class="vbubble vc1" href="#year-2025" title="Fidelis Forze Armate">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=esercito.difesa.it" alt="GPOI" onerror="this.parentNode.style.background='var(--accent)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>GPOI</strong></div>
+      </div>
+
+      <!-- eCampus dn -->
+      <div class="vn dn">
+        <a class="vbubble vc2" href="#year-2025" title="Università eCampus">
+          <img src="https://logo.clearbit.com/ecampus.it" alt="eCampus" onerror="this.parentNode.style.background='var(--accent2)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>eCampus</strong></div>
+      </div>
+
+      <!-- Bona Sforza up -->
+      <div class="vn up">
+        <a class="vbubble vc3" href="#year-2025" title="Università Bona Sforza">
+          <img src="https://www.google.com/s2/favicons?sz=64&domain=unibas.it" alt="Bona Sforza" onerror="this.parentNode.style.background='var(--accent3)';this.remove();" />
+        </a>
+        <div class="vstem"></div>
+        <div class="vlbl"><strong>Bona Sforza</strong></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 <div class="filter-bar">
   <span class="filter-label">Filtra:</span>
@@ -290,6 +644,38 @@ const projects = {
 const typeLabel = { online:"Online", presence:"In Presenza", hybrid:"Ibrido" };
 const typeBadge = { online:"badge-online", presence:"badge-presence", hybrid:"badge-hybrid" };
 
+// Logo map: company key → { url: clearbit/favicon URL, fallback: emoji }
+const logos = {
+  "ANFOS":                { url: "https://www.google.com/s2/favicons?sz=64&domain=anfos.it",            fallback:"🛡️" },
+  "IBM":                  { url: "https://logo.clearbit.com/ibm.com",                                   fallback:"🖥️" },
+  "SPRINT SCHOOL":        { url: "https://logo.clearbit.com/sprintschool.it",                           fallback:"🚀" },
+  "ACCENTURE":            { url: "https://logo.clearbit.com/accenture.com",                             fallback:"💼" },
+  "LV8 / Fondazione Vodafone": { url: "https://logo.clearbit.com/vodafone.it",                         fallback:"📱" },
+  "MERMEC / ANGELSTAR":   { url: "https://logo.clearbit.com/mermec.com",                               fallback:"🚆" },
+  "APULIA DIGITAL":       { url: "https://www.google.com/s2/favicons?sz=64&domain=apuliadigital.it",   fallback:"🤖" },
+  "OPEN FIBER (ELIS)":    { url: "https://logo.clearbit.com/openfiber.it",                             fallback:"🌐" },
+  "TIM / IDMO / MIM":     { url: "https://logo.clearbit.com/tim.it",                                   fallback:"📡" },
+  "ASTER PUGLIA":         { url: "https://www.google.com/s2/favicons?sz=64&domain=asterpuglia.it",     fallback:"🎓" },
+  "Fondazione MEGAMARK":  { url: "https://www.google.com/s2/favicons?sz=64&domain=megamark.it",        fallback:"⭐" },
+  "CAMPUS BARI":          { url: "https://www.google.com/s2/favicons?sz=64&domain=campusbari.it",      fallback:"🎓" },
+  "Politecnico di Bari":  { url: "https://logo.clearbit.com/poliba.it",                                fallback:"🏛️" },
+  "AURIGA SpA":           { url: "https://logo.clearbit.com/aurigaspa.com",                            fallback:"🏦" },
+  "CivicaMente Srl":      { url: "https://www.google.com/s2/favicons?sz=64&domain=oracle.com",         fallback:"🗄️" },
+  "CivicaMente Srl / Leonardo SpA": { url: "https://logo.clearbit.com/leonardocompany.com",           fallback:"✈️" },
+  "GPOI":                 { url: "https://www.google.com/s2/favicons?sz=64&domain=esercito.difesa.it", fallback:"🎖️" },
+  "eCampus":              { url: "https://logo.clearbit.com/ecampus.it",                               fallback:"🎓" },
+  "Università Bona Sforza":{ url: "https://www.google.com/s2/favicons?sz=64&domain=unibas.it",        fallback:"🏛️" }
+};
+
+function logoHTML(company) {
+  const l = logos[company];
+  if (!l) return `<div class="company-logo">${'🏢'}</div>`;
+  return `<div class="company-logo">
+    <img src="${l.url}" alt="${company}"
+      onerror="this.style.display='none';this.parentNode.innerHTML='${l.fallback}';" />
+  </div>`;
+}
+
 function renderYear(data, containerId) {
   const wrap = document.getElementById(containerId);
   data.forEach(p => {
@@ -299,8 +685,11 @@ function renderYear(data, containerId) {
     row.innerHTML = `
       <div class="project-header">
         <div class="project-title-wrap">
-          <div class="project-title">${p.title}</div>
-          <div class="project-company">${p.company}</div>
+          ${logoHTML(p.company)}
+          <div class="project-title-text">
+            <div class="project-title">${p.title}</div>
+            <div class="project-company">${p.company}</div>
+          </div>
         </div>
         <span class="proj-badge ${typeBadge[p.type]}">${typeLabel[p.type]}</span>
         <span class="proj-hours">⏱ ${p.hours}h</span>
