@@ -1,440 +1,2324 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio FSL — V ITIA C</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UDebate — Esposizione Professori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0a0f;
+  --surface: #111118;
+  --border:  #1e1e2e;
+  --accent:  #e8ff47;
+  --blue:    #3d8bff;
+  --purple:  #c084fc;
+  --mint:    #34d399;
+  --red:     #ff4757;
+  --text:    #f0f0f5;
+  --muted:   #6b6b80;
+  --code-bg: #0d1117;
+}
 
-    :root {
-      --cream:   #f5f0e8;
-      --warm:    #ede8dc;
-      --ink:     #1a1610;
-      --ink2:    #3d3629;
-      --muted:   #8c7f6e;
-      --accent:  #c4501a;  /* burnt orange */
-      --accent2: #2a5c8a;  /* deep navy */
-      --accent3: #4a7c59;  /* forest green */
-      --line:    rgba(26,22,16,0.12);
-      --ff-head: 'Playfair Display', serif;
-      --ff-body: 'DM Sans', sans-serif;
-      --ff-mono: 'DM Mono', monospace;
-    }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-    body {
-      background: var(--cream);
-      color: var(--ink);
-      font-family: var(--ff-body);
-      overflow-x: hidden;
-    }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-    /* Paper texture */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 0;
-    }
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: .025;
+  pointer-events: none;
+  z-index: 0;
+}
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 3rem;
-      background: rgba(245,240,232,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-brand {
-      font-family: var(--ff-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      text-transform: uppercase;
-      text-decoration: none;
-    }
-    .nav-brand strong { color: var(--accent); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      font-family: var(--ff-body);
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--ink2);
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      transition: color 0.2s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute; bottom: -2px; left: 0; right: 0;
-      height: 1px; background: var(--accent);
-      transform: scaleX(0); transform-origin: left;
-      transition: transform 0.25s;
-    }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-links a:hover::after { transform: scaleX(1); }
+/* ── SIDEBAR NAV ── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 260px; height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0 20px;
+  transition: transform .3s ease;
+}
 
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 8rem 3rem 4rem;
-      gap: 4rem;
-      position: relative; z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+.sidebar-logo {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.sidebar-logo .name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+.sidebar-logo .sub {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
 
-    .hero-left { position: relative; }
+.nav-section {
+  padding: 0 16px 8px;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  margin-top: 12px;
+}
 
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      font-family: var(--ff-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      width: 24px; height: 1px;
-      background: var(--accent);
-    }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 24px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all .15s;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(232,255,71,.05); }
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
 
-    .hero-title {
-      font-family: var(--ff-head);
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      font-weight: 900;
-      line-height: 1.0;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.8rem;
-    }
-    .hero-title em {
-      font-style: italic;
-      color: var(--accent);
-    }
+.timer-badge {
+  margin-left: auto;
+  font-size: 10px;
+  background: rgba(232,255,71,.1);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-weight: 600;
+}
 
-    .hero-desc {
-      font-size: 1rem;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 400px;
-      margin-bottom: 2.5rem;
-      font-weight: 300;
-    }
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: 260px;
+  min-height: 100vh;
+}
 
-    .hero-pills {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-      margin-bottom: 2.5rem;
-    }
-    .pill {
-      font-family: var(--ff-mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.06em;
-      padding: 0.3rem 0.85rem;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      color: var(--ink2);
-      background: rgba(255,255,255,0.5);
-    }
+.section {
+  min-height: 100vh;
+  padding: 72px 56px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.section:last-child { border-bottom: none; }
 
-    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.75rem 1.8rem;
-      background: var(--ink);
-      color: var(--cream);
-      font-family: var(--ff-body);
-      font-size: 0.85rem;
-      font-weight: 500;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.75rem 1.8rem;
-      border: 1.5px solid var(--ink);
-      color: var(--ink);
-      font-family: var(--ff-body);
-      font-size: 0.85rem;
-      font-weight: 500;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: all 0.2s;
-      background: transparent;
-    }
-    .btn-secondary:hover { background: var(--ink); color: var(--cream); transform: translateY(-2px); }
+/* ── HERO ── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 80px 56px;
+}
 
-    /* ── HERO RIGHT — big stat display ── */
-    .hero-right {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--line);
-    }
-    .big-stat {
-      background: var(--warm);
-      padding: 1.8rem 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: background 0.2s;
-    }
-    .big-stat:hover { background: white; }
-    .big-stat-num {
-      font-family: var(--ff-head);
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1;
-    }
-    .big-stat-label {
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-weight: 400;
-      text-align: right;
-      max-width: 140px;
-    }
-    .big-stat-label strong { display: block; color: var(--ink2); font-weight: 500; font-size: 0.9rem; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232,255,71,.08);
+  border: 1px solid rgba(232,255,71,.2);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  width: fit-content;
+}
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(1.3); }
+}
 
-    /* decorative number */
-    .big-stat-num span { color: var(--accent); }
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(52px, 7vw, 88px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -3px;
+  margin-bottom: 24px;
+}
+.hero-title .accent { color: var(--accent); }
+.hero-title .dim { color: var(--muted); font-weight: 400; }
 
-    /* ── DIVIDER ── */
-    .section-divider {
-      width: 100%; height: 1px;
-      background: var(--line);
-      position: relative; z-index: 1;
-    }
+.hero-desc {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 600px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
 
-    /* ── CARDS PREVIEW ── */
-    #preview {
-      position: relative; z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 5rem 3rem;
-    }
+.tech-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 48px;
+}
+.pill {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface);
+  font-family: 'DM Mono', monospace;
+}
 
-    .preview-header {
-      display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: 2.5rem;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 1rem;
-    }
-    .preview-title {
-      font-family: var(--ff-head);
-      font-size: 1.6rem;
-      font-weight: 700;
-    }
-    .preview-link {
-      font-family: var(--ff-mono);
-      font-size: 0.72rem;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .preview-link:hover { text-decoration: underline; }
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 580px;
+}
+.time-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 20px;
+}
+.time-card .val {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.time-card .lbl {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
 
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5px;
-      background: var(--line);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .page-card {
-      background: var(--warm);
-      padding: 2.5rem 2rem;
-      text-decoration: none;
-      color: var(--ink);
-      transition: background 0.25s;
-      display: flex; flex-direction: column; gap: 1rem;
-    }
-    .page-card:hover { background: white; }
-    .page-card-icon {
-      width: 42px; height: 42px;
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      background: white;
-    }
-    .page-card-title {
-      font-family: var(--ff-head);
-      font-size: 1.2rem;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    .page-card-desc {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
-      font-weight: 300;
-    }
-    .page-card-cta {
-      font-family: var(--ff-mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-top: auto;
-    }
+/* ── SECTION HEADERS ── */
+.sec-header {
+  margin-bottom: 48px;
+}
+.sec-tag {
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.sec-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.05;
+  color: var(--text);
+}
+.sec-sub {
+  font-size: 16px;
+  color: var(--muted);
+  margin-top: 12px;
+  max-width: 640px;
+  line-height: 1.7;
+}
 
-    /* ── FOOTER ── */
-    footer {
-      position: relative; z-index: 1;
-      border-top: 1px solid var(--line);
-      padding: 2rem 3rem;
-      display: flex; justify-content: space-between; align-items: center;
-      font-family: var(--ff-mono);
-      font-size: 0.68rem;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-    }
+/* ── TALK BLOCKS ── */
+.talk-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.talk-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 20px 0 0 20px;
+  background: var(--accent);
+}
+.talk-block.blue::before { background: var(--blue); }
+.talk-block.purple::before { background: var(--purple); }
+.talk-block.mint::before { background: var(--mint); }
+.talk-block.red::before { background: var(--red); }
 
-    /* ── ANIMATIONS ── */
-    .fade-in {
-      opacity: 0; transform: translateY(20px);
-      animation: fadeIn 0.7s ease forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.35s; }
-    .delay-4 { animation-delay: 0.5s; }
+.talk-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.talk-block.blue .talk-label { color: var(--blue); }
+.talk-block.purple .talk-label { color: var(--purple); }
+.talk-block.mint .talk-label { color: var(--mint); }
+.talk-block.red .talk-label { color: var(--red); }
 
-    .reveal {
-      opacity: 0; transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal.visible { opacity: 1; transform: none; }
+.talk-time {
+  position: absolute;
+  top: 20px; right: 24px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  background: rgba(255,255,255,.04);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; }
-      .hero-right { display: none; }
-      nav { padding: 1rem 1.5rem; }
-      #preview { padding: 3rem 1.5rem; }
-      .card-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-    }
-  </style>
+.talk-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+.talk-text {
+  font-size: 15px;
+  color: #a0a0b8;
+  line-height: 1.8;
+}
+.talk-text strong { color: var(--text); font-weight: 600; }
+.talk-text em { color: var(--accent); font-style: normal; }
+
+/* ── CODE BLOCKS ── */
+.code-wrap {
+  margin: 20px 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #1e2433;
+}
+.code-header {
+  background: #13192b;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #7a8ba0;
+}
+.code-header .dots {
+  display: flex; gap: 6px;
+}
+.code-header .dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+}
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.code-header .filename {
+  margin-left: 6px;
+  color: #8b9bb8;
+}
+pre {
+  background: var(--code-bg);
+  padding: 22px 24px;
+  overflow-x: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.75;
+  tab-size: 4;
+}
+.k { color: #ff79c6; }    /* keyword */
+.fn { color: #50fa7b; }   /* function */
+.s { color: #f1fa8c; }    /* string */
+.c { color: #6272a4; font-style: italic; }  /* comment */
+.t { color: #8be9fd; }    /* type/class */
+.v { color: #bd93f9; }    /* variable */
+.o { color: #ff79c6; }    /* operator */
+.n { color: #f8f8f2; }    /* normal */
+.num { color: #bd93f9; }  /* number */
+.a { color: #ffb86c; }    /* attribute */
+
+/* ── TWO-COL ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin: 24px 0;
+}
+.two-col.wide { grid-template-columns: 1.2fr 0.8fr; }
+
+/* ── FEATURE GRID ── */
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
+.feat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 22px;
+  transition: border-color .2s;
+}
+.feat-card:hover { border-color: rgba(232,255,71,.3); }
+.feat-icon {
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+.feat-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.feat-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── DB SCHEMA ── */
+.db-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
+.db-table {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.db-head {
+  padding: 10px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bg);
+  text-align: center;
+}
+.db-field {
+  padding: 7px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+.db-field.pk { color: #febc2e; }
+.db-field.fk { color: var(--blue); }
+
+/* ── TIMELINE ── */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+  margin: 28px 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--blue), var(--purple));
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -28px; top: 6px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+.tl-time {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.tl-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.tl-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── HIGHLIGHT BOX ── */
+.hl-box {
+  background: rgba(232,255,71,.06);
+  border: 1px solid rgba(232,255,71,.2);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+.hl-box.blue { background: rgba(61,139,255,.06); border-color: rgba(61,139,255,.2); }
+.hl-box.red { background: rgba(255,71,87,.06); border-color: rgba(255,71,87,.2); }
+.hl-box.mint { background: rgba(52,211,153,.06); border-color: rgba(52,211,153,.2); }
+.hl-box-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.hl-box.blue .hl-box-title { color: var(--blue); }
+.hl-box.red .hl-box-title { color: var(--red); }
+.hl-box.mint .hl-box-title { color: var(--mint); }
+.hl-box-text {
+  font-size: 14px;
+  color: #a0a0b8;
+  line-height: 1.7;
+}
+
+/* ── GLOW BLOBS ── */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+.content { position: relative; z-index: 1; }
+
+/* ── PROGRESS BAR ── */
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 999;
+  transition: width .1s linear;
+  box-shadow: 0 0 12px var(--accent);
+}
+
+
+.gh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 3px 10px;
+  background: rgba(232,255,71,.08);
+  border: 1px solid rgba(232,255,71,.2);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  text-decoration: none;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.gh-link:hover { background: rgba(232,255,71,.18); }
+.gh-link svg { flex-shrink:0; }
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 24px 0;
+}
+.file-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  text-decoration: none;
+  transition: all .15s;
+  overflow: hidden;
+}
+.file-link:hover { border-color: rgba(232,255,71,.3); color: var(--accent); }
+.file-link svg { flex-shrink:0; color: var(--accent); opacity:.6; }
+.file-cat {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 20px 0 8px;
+}
+
+
+.full-file-wrap {
+  margin-top: 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(232,255,71,.18);
+}
+.full-file-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: rgba(232,255,71,.06);
+  border: none;
+  cursor: pointer;
+  color: #a0a0b8;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  transition: background .15s;
+}
+.full-file-toggle:hover { background: rgba(232,255,71,.12); color: var(--text); }
+.full-file-content pre {
+  border-radius: 0 !important;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-260px); }
+  .main { margin-left: 0; }
+  .section, .hero { padding: 60px 28px; }
+  .two-col, .feat-grid, .db-grid { grid-template-columns: 1fr; }
+  .time-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="index.html" class="nav-brand"><strong>FSL</strong> / Portfolio</a>
-  <ul class="nav-links">
-    <li><a href="timeline.html">Timeline</a></li>
-    <li><a href="competenze.html">Competenze</a></li>
-    <li><a href="profilo.html">Profilo</a></li>
-  </ul>
+<div id="progress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="name">UDebate</div>
+    <div class="sub">Esposizione · ~20 min</div>
+  </div>
+
+  <div class="nav-section">Introduzione</div>
+  <a class="nav-item active" href="#intro"><span class="nav-dot"></span>Apertura <span class="timer-badge">2 min</span></a>
+  <a class="nav-item" href="#panoramica"><span class="nav-dot"></span>Panoramica <span class="timer-badge">2 min</span></a>
+
+  <div class="nav-section">Tecnologie</div>
+  <a class="nav-item" href="#laravel"><span class="nav-dot"></span>Laravel & MVC <span class="timer-badge">3 min</span></a>
+  <a class="nav-item" href="#livewire"><span class="nav-dot"></span>Livewire & Volt <span class="timer-badge">2 min</span></a>
+
+  <div class="nav-section">Funzionalità</div>
+  <a class="nav-item" href="#auth"><span class="nav-dot"></span>Autenticazione <span class="timer-badge">2 min</span></a>
+  <a class="nav-item" href="#debate"><span class="nav-dot"></span>Gestione Debate <span class="timer-badge">3 min</span></a>
+  <a class="nav-item" href="#ai"><span class="nav-dot"></span>Moderazione AI <span class="timer-badge">2 min</span></a>
+  <a class="nav-item" href="#moderator"><span class="nav-dot"></span>Pannello Moderatore <span class="timer-badge">1 min</span></a>
+
+  <div class="nav-section">Architettura</div>
+  <a class="nav-item" href="#database"><span class="nav-dot"></span>Database & Modelli <span class="timer-badge">1 min</span></a>
+  <a class="nav-item" href="#docker"><span class="nav-dot"></span>Docker & Deploy <span class="timer-badge">1 min</span></a>
+
+  <div class="nav-section">File sorgente</div>
+  <a class="nav-item" href="#files"><span class="nav-dot"></span>Tutti i file <span class="timer-badge">📁</span></a>
+
+  <div class="nav-section">Chiusura</div>
+  <a class="nav-item" href="#conclusioni"><span class="nav-dot"></span>Conclusioni <span class="timer-badge">1 min</span></a>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-left">
-    <div class="hero-eyebrow fade-in">ITT Panetti-Pitagora · Bari</div>
-    <h1 class="hero-title fade-in delay-1">
-      Formazione<br><em>Scuola</em><br>Lavoro
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══════════════════════════════════════════════════ HERO -->
+<section class="hero" id="intro">
+  <div class="blob" style="width:500px;height:500px;background:#e8ff4710;top:-100px;right:-100px;"></div>
+  <div class="content">
+    <div class="hero-badge"><span class="pulse-dot"></span>Presentazione progetto</div>
+    <h1 class="hero-title">
+      <span class="accent">UDebate</span><br>
+      <span class="dim">Il social del confronto</span>
     </h1>
-    <p class="hero-desc fade-in delay-2">
-      Relazione finale del percorso triennale FSL. Tre anni di esperienze con aziende, enti e università — documentati progetto per progetto.
+    <p class="hero-desc">
+      Piattaforma web universitaria per creare, seguire e partecipare a debate accademici. 
+      Costruita con Laravel 13, Livewire 3, Tailwind CSS e containerizzata con Docker.
     </p>
-    <div class="hero-pills fade-in delay-3">
-      <span class="pill">Classe V ITIA C</span>
-      <span class="pill">Indirizzo Informatico</span>
-      <span class="pill">Tutor: G. Cantalice</span>
-      <span class="pill">A.S. 2025/26</span>
+    <div class="tech-pills">
+      <span class="pill">Laravel 13</span>
+      <span class="pill">PHP 8.3</span>
+      <span class="pill">Livewire 3 + Volt</span>
+      <span class="pill">Tailwind CSS</span>
+      <span class="pill">Vite</span>
+      <span class="pill">MySQL 8</span>
+      <span class="pill">Docker Compose</span>
+      <span class="pill">Groq AI API</span>
     </div>
-    <div class="hero-ctas fade-in delay-4">
-      <a href="timeline.html" class="btn-primary">
-        Esplora la timeline
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <div class="time-grid">
+      <div class="time-card"><div class="val">~20</div><div class="lbl">minuti totali</div></div>
+      <div class="time-card"><div class="val">10</div><div class="lbl">sezioni</div></div>
+      <div class="time-card"><div class="val">6</div><div class="lbl">snippet di codice</div></div>
+      <div class="time-card"><div class="val">5</div><div class="lbl">funzionalità chiave</div></div>
+    </div>
+
+    <div class="talk-block" style="margin-top:40px;max-width:720px;">
+      <div class="talk-label">📢 Cosa dire all'apertura</div>
+      <div class="talk-time">~2 min</div>
+      <div class="talk-title">Come iniziare la presentazione</div>
+      <div class="talk-text">
+        <em>"Buongiorno a tutti."</em> Oggi vi presento <strong>UDebate</strong>, una piattaforma web che abbiamo sviluppato per digitalizzare il mondo del debate universitario. L'idea di base è semplice: 
+        gli studenti accedono, creano un argomento, gli altri lo commentano e votano. Il tutto in tempo reale, 
+        con un sistema di moderazione basato sull'intelligenza artificiale.<br><br>
+        Dal punto di vista tecnico, il progetto si basa su <strong>Laravel</strong>, il framework PHP più diffuso al mondo, 
+        arricchito da <strong>Livewire</strong> per la reattività del frontend, e containerizzato con <strong>Docker</strong> 
+        per garantire un deploy ripetibile su qualsiasi macchina.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ PANORAMICA -->
+<section class="section" id="panoramica">
+  <div class="blob" style="width:400px;height:400px;background:#3d8bff08;top:0;right:0;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">01 — Panoramica</div>
+      <h2 class="sec-title">Cos'è UDebate e cosa fa</h2>
+      <p class="sec-sub">Una piattaforma dove ogni utente può aprire un debate, ricevere commenti e voti dagli altri — il tutto moderato da un'AI.</p>
+    </div>
+
+    <div class="talk-block">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~2 min</div>
+      <div class="talk-title">Presentare il progetto ai professori</div>
+      <div class="talk-text">
+        UDebate nasce da una domanda: come si potrebbe portare online la cultura del dibattito accademico? 
+        Il risultato è una web app con <strong>tre aree principali</strong>:<br><br>
+
+        <strong>1. La Home pubblica</strong> — accessibile a tutti, mostra la piattaforma e invita a registrarsi.<br>
+        <strong>2. La Dashboard utente</strong> — il cuore del sito: qui si creano e si leggono i debate, si vota e si commenta.<br>
+        <strong>3. Il Pannello moderatore</strong> — solo per gli account con ruolo <em>moderator</em>: gestisce il "topic del giorno" e monitora la piattaforma.<br><br>
+
+        Un elemento che ci ha particolarmente soddisfatti è l'integrazione con <strong>Groq AI</strong> — ogni testo pubblicato 
+        viene analizzato automaticamente da un LLM prima di essere salvato: se contiene linguaggio offensivo, 
+        viene bloccato con un messaggio di errore.
+      </div>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">💬</div>
+        <div class="feat-title">Feed dei Debate</div>
+        <div class="feat-desc">Lista aggiornata di tutti i debate aperti. Ricerca integrata per titolo e contenuto.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗳️</div>
+        <div class="feat-title">Like & Commenti</div>
+        <div class="feat-desc">Vota con un like o aggiungi un commento. Risposta JSON in tempo reale senza ricaricare la pagina.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-title">Moderazione AI</div>
+        <div class="feat-desc">Ogni testo passa per Groq (LLaMA 3.1). Se offensivo, viene bloccato prima del salvataggio.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Statistiche personali</div>
+        <div class="feat-desc">Counter in dashboard: debate aperti, like ricevuti, commenti ricevuti.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-title">Ruoli utente</div>
+        <div class="feat-desc">Due ruoli: <code style="color:var(--accent)">user</code> e <code style="color:var(--accent)">moderator</code>. Il middleware EnsureModerator protegge le rotte admin.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📅</div>
+        <div class="feat-title">Topic del giorno</div>
+        <div class="feat-desc">Il moderatore imposta un tema quotidiano che appare per tutti gli utenti nella dashboard.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ LARAVEL -->
+<section class="section" id="laravel">
+  <div class="blob" style="width:350px;height:350px;background:#e8ff4708;bottom:0;left:-50px;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">02 — Laravel & Architettura</div>
+      <h2 class="sec-title">Laravel e il pattern MVC</h2>
+      <p class="sec-sub">Laravel è il framework PHP che struttura tutta la logica dell'applicazione secondo il pattern Model-View-Controller.</p>
+    </div>
+
+    <div class="talk-block">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~3 min</div>
+      <div class="talk-title">Spiegare Laravel ai professori</div>
+      <div class="talk-text">
+        Laravel è il framework PHP più usato al mondo. Ci dà una struttura precisa: ogni richiesta HTTP 
+        parte dalle <strong>Routes</strong>, viene gestita da un <strong>Controller</strong>, 
+        che usa i <strong>Model</strong> per leggere o scrivere nel database, 
+        e infine restituisce una <strong>View</strong> Blade all'utente.<br><br>
+
+        Nel nostro caso, ad esempio, quando un utente visita <em>/dashboard</em>, 
+        Laravel chiama <em>DebateController@index</em>, che carica tutti i debate dal database 
+        con le relative statistiche e li passa alla view. Mostriamo adesso il codice reale.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <span class="filename">routes/web.php</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/routes/web.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+          </div>
+<pre><span class="c">// Rotte protette da autenticazione + email verificata</span>
+<span class="t">Route</span>::<span class="fn">middleware</span>([<span class="s">'auth'</span>, <span class="s">'verified'</span>])
+     -><span class="fn">group</span>(<span class="k">function</span> () {
+
+  <span class="c">// Dashboard principale</span>
+  <span class="t">Route</span>::<span class="fn">get</span>(<span class="s">'/dashboard'</span>,
+    [<span class="t">DebateController</span>::<span class="k">class</span>, <span class="s">'index'</span>])
+    -><span class="fn">name</span>(<span class="s">'dashboard'</span>);
+
+  <span class="c">// Crea nuovo debate</span>
+  <span class="t">Route</span>::<span class="fn">post</span>(<span class="s">'/debates'</span>,
+    [<span class="t">DebateController</span>::<span class="k">class</span>, <span class="s">'store'</span>])
+    -><span class="fn">name</span>(<span class="s">'debates.store'</span>);
+
+  <span class="c">// Like toggle (risposta JSON)</span>
+  <span class="t">Route</span>::<span class="fn">post</span>(<span class="s">'/debates/{debate}/likes'</span>,
+    [<span class="t">LikeController</span>::<span class="k">class</span>, <span class="s">'toggle'</span>])
+    -><span class="fn">name</span>(<span class="s">'likes.toggle'</span>);
+
+  <span class="c">// Commenti (risposta JSON)</span>
+  <span class="t">Route</span>::<span class="fn">post</span>(<span class="s">'/debates/{debate}/comments'</span>,
+    [<span class="t">CommentController</span>::<span class="k">class</span>, <span class="s">'store'</span>])
+    -><span class="fn">name</span>(<span class="s">'comments.store'</span>);
+});</pre>
+        </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('routes_web_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">web.php</span>
+    <svg class="toggle-arrow" id="arrow_routes_web_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_routes_web_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">routes/web.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/routes/web.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
       </a>
-      <a href="profilo.html" class="btn-secondary">Chi sono</a>
     </div>
-  </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+use App\Http\Controllers\DebateController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ModeratorController;
+use App\Http\Controllers\SearchController;
 
-  <div class="hero-right fade-in delay-2">
-    <div class="big-stat">
-      <div class="big-stat-num"><span>3</span></div>
-      <div class="big-stat-label"><strong>Anni di percorso</strong>2023 → 2026</div>
+
+
+Route::view(&#x27;/&#x27;, &#x27;welcome&#x27;);
+
+/*Route::view(&#x27;dashboard&#x27;, &#x27;dashboard&#x27;)
+    -&gt;middleware([&#x27;auth&#x27;, &#x27;verified&#x27;])
+    -&gt;name(&#x27;dashboard&#x27;);
+*/
+Route::middleware([&#x27;auth&#x27;, &#x27;verified&#x27;])-&gt;group(function () {
+    // Mostra la dashboard
+    Route::get(&#x27;/dashboard&#x27;, [DebateController::class, &#x27;index&#x27;])-&gt;name(&#x27;dashboard&#x27;);
+    // Rotta nascosta per salvare il dibattito (quando premi &quot;Crea&quot;)
+    Route::post(&#x27;/debates&#x27;, [DebateController::class, &#x27;store&#x27;])-&gt;name(&#x27;debates.store&#x27;);
+    //elimino e modifico i dibattiti
+    Route::patch(&#x27;/debates/{debate}&#x27;, [App\Http\Controllers\DebateController::class, &#x27;update&#x27;])-&gt;name(&#x27;debates.update&#x27;);
+    Route::delete(&#x27;/debates/{debate}&#x27;, [App\Http\Controllers\DebateController::class, &#x27;destroy&#x27;])-&gt;name(&#x27;debates.destroy&#x27;);
+    Route::post(&#x27;/debates/{debate}/likes&#x27;, [LikeController::class, &#x27;toggle&#x27;])-&gt;name(&#x27;likes.toggle&#x27;);
+    Route::post(&#x27;/debates/{debate}/comments&#x27;, [CommentController::class, &#x27;store&#x27;])-&gt;name(&#x27;comments.store&#x27;);
+});
+
+Route::view(&#x27;profile&#x27;, &#x27;profile&#x27;)
+    -&gt;middleware([&#x27;auth&#x27;])
+    -&gt;name(&#x27;profile&#x27;);
+
+
+
+Route::get(&#x27;/moderator&#x27;, [ModeratorController::class, &#x27;index&#x27;])
+    -&gt;middleware([&#x27;auth&#x27;, &#x27;moderator&#x27;])
+    -&gt;name(&#x27;moderator.dashboard&#x27;);
+Route::middleware([&#x27;auth&#x27;, &#x27;moderator&#x27;])-&gt;prefix(&#x27;moderator&#x27;)-&gt;name(&#x27;moderator.&#x27;)-&gt;group(function () {
+    Route::get(&#x27;/&#x27;,        [ModeratorController::class, &#x27;index&#x27;])-&gt;name(&#x27;dashboard&#x27;);
+    Route::get(&#x27;/users&#x27;,   [ModeratorController::class, &#x27;users&#x27;])-&gt;name(&#x27;users&#x27;);
+    Route::get(&#x27;/debates&#x27;, [ModeratorController::class, &#x27;debates&#x27;])-&gt;name(&#x27;debates&#x27;);
+});
+
+
+Route::post(&#x27;/moderator/update-topic&#x27;, [ModeratorController::class, &#x27;updateTopic&#x27;])
+    -&gt;name(&#x27;admin.updateTopic&#x27;);
+   
+
+Route::get(&#x27;/cerca&#x27;, [SearchController::class, &#x27;search&#x27;])-&gt;name(&#x27;search.index&#x27;);
+    
+require __DIR__.&#x27;/auth.php&#x27;;
+</pre>
+  </div>
+</div>
+      </div>
+      <div>
+        <div class="hl-box">
+          <div class="hl-box-title">🧭 Come leggere questo file</div>
+          <div class="hl-box-text">
+            Ogni riga <code style="color:var(--accent)">Route::get/post</code> mappa un URL a un metodo di Controller. 
+            Il gruppo <code style="color:var(--accent)">middleware(['auth','verified'])</code> significa che 
+            tutte queste pagine richiedono un utente loggato con email verificata. 
+            Chi non lo è, viene reindirizzato automaticamente al login da Laravel.
+          </div>
+        </div>
+        <div class="hl-box blue" style="margin-top:16px;">
+          <div class="hl-box-title">🔒 Rotte del Moderatore</div>
+          <div class="hl-box-text">
+            Le rotte <code style="color:var(--blue)">/moderator/*</code> usano il middleware custom 
+            <code style="color:var(--blue)">EnsureModerator</code>: controlla che 
+            <code style="color:var(--blue)">$user->role === 'moderator'</code>, 
+            altrimenti lancia un errore HTTP 403.
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="big-stat">
-      <div class="big-stat-num"><span>149</span></div>
-      <div class="big-stat-label"><strong>Ore totali</strong>di formazione</div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <span class="filename">app/Http/Controllers/DebateController.php — metodo index()</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/DebateController.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+      </div>
+<pre><span class="k">public function</span> <span class="fn">index</span>(<span class="t">Request</span> <span class="v">$request</span>)
+{
+    <span class="v">$search</span> = <span class="v">$request</span>-><span class="fn">input</span>(<span class="s">'q'</span>); <span class="c">// parametro GET per ricerca</span>
+    <span class="v">$user</span>   = <span class="fn">auth</span>()-><span class="fn">user</span>();
+    <span class="v">$dailyTopic</span> = <span class="t">DailyTopic</span>::<span class="fn">latest</span>()-><span class="fn">first</span>();
+
+    <span class="c">// Carica tutti i debate con relazioni (user, likes, commenti)</span>
+    <span class="v">$debates</span> = <span class="t">Debate</span>::<span class="fn">with</span>([<span class="s">'user'</span>, <span class="s">'likes'</span>, <span class="s">'comments.user'</span>])
+        -><span class="fn">when</span>(<span class="v">$search</span>, <span class="k">function</span> (<span class="v">$query</span>, <span class="v">$search</span>) {
+            <span class="c">// Ricerca full-text su titolo e messaggio</span>
+            <span class="v">$query</span>-><span class="fn">where</span>(<span class="s">'title'</span>, <span class="s">'like'</span>, <span class="s">'%'</span> . <span class="v">$search</span> . <span class="s">'%'</span>)
+                   -><span class="fn">orWhere</span>(<span class="s">'message'</span>, <span class="s">'like'</span>, <span class="s">'%'</span> . <span class="v">$search</span> . <span class="s">'%'</span>);
+        })-><span class="fn">latest</span>()-><span class="fn">get</span>();
+
+    <span class="c">// Statistiche personali dell'utente loggato</span>
+    <span class="v">$debatesCount</span>     = <span class="v">$user</span>-><span class="fn">debates</span>()-><span class="fn">count</span>();
+    <span class="v">$votesReceived</span>    = <span class="t">Like</span>::<span class="fn">whereIn</span>(<span class="s">'debate_id'</span>, <span class="v">$user</span>-><span class="fn">debates</span>()-><span class="fn">pluck</span>(<span class="s">'id'</span>))-><span class="fn">count</span>();
+    <span class="v">$commentsReceived</span> = <span class="t">Comment</span>::<span class="fn">whereIn</span>(<span class="s">'debate_id'</span>, <span class="v">$user</span>-><span class="fn">debates</span>()-><span class="fn">pluck</span>(<span class="s">'id'</span>))-><span class="fn">count</span>();
+
+    <span class="k">return</span> <span class="fn">view</span>(<span class="s">'dashboard'</span>, <span class="fn">compact</span>(
+        <span class="s">'debates'</span>, <span class="s">'debatesCount'</span>, <span class="s">'votesReceived'</span>,
+        <span class="s">'commentsReceived'</span>, <span class="s">'dailyTopic'</span>
+    ));
+}</pre>
     </div>
-    <div class="big-stat">
-      <div class="big-stat-num"><span>14</span></div>
-      <div class="big-stat-label"><strong>Enti partner</strong>aziende & università</div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Http_Controllers_DebateController_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">DebateController.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Http_Controllers_DebateController_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Http_Controllers_DebateController_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Http/Controllers/DebateController.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/DebateController.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
     </div>
-    <div class="big-stat">
-      <div class="big-stat-num"><span>6</span></div>
-      <div class="big-stat-label"><strong>Certificazioni</strong>ottenute</div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+
+// gestione dibattiti e dashboard con moderazione ai
+
+namespace App\Http\Controllers;
+
+use App\Models\Debate;
+use Illuminate\Http\Request;
+use App\Models\Like;
+use App\Models\Comment;
+use App\Services\GroqModerationService; 
+use App\Models\DailyTopic;
+
+class DebateController extends Controller
+{
+    protected $moderator;
+
+    // injection servizio moderazione
+    public function __construct(GroqModerationService $moderator)
+    {
+        $this-&gt;moderator = $moderator;
+    }
+
+    // lettura dati statistiche e topic del giorno
+    // Lettura dati statistiche, topic del giorno e gestione ricerca
+    public function index(Request $request)
+    {
+        $search = $request-&gt;input(&#x27;q&#x27;);
+
+        $user = auth()-&gt;user();
+        $dailyTopic = DailyTopic::latest()-&gt;first();
+
+
+        $debates = Debate::with([&#x27;user&#x27;, &#x27;likes&#x27;, &#x27;comments.user&#x27;])
+            -&gt;when($search, function ($query, $search) {
+                $query-&gt;where(&#x27;title&#x27;, &#x27;like&#x27;, &#x27;%&#x27; . $search . &#x27;%&#x27;)
+                      -&gt;orWhere(&#x27;message&#x27;, &#x27;like&#x27;, &#x27;%&#x27; . $search . &#x27;%&#x27;);
+            })
+            -&gt;latest()
+            -&gt;get();
+
+        $debatesCount     = $user-&gt;debates()-&gt;count();
+        $votesReceived    = Like::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;count();
+        $commentsReceived = Comment::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;count();
+
+        $myDebates        = $user-&gt;debates()-&gt;latest()-&gt;take(5)-&gt;get();
+        $likesReceived    = Like::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;with(&#x27;debate&#x27;)-&gt;latest()-&gt;take(5)-&gt;get();
+        $commentsOnMine   = Comment::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;with([&#x27;user&#x27;, &#x27;debate&#x27;])-&gt;latest()-&gt;take(5)-&gt;get();
+
+        return view(&#x27;dashboard&#x27;, compact(
+            &#x27;debates&#x27;, &#x27;debatesCount&#x27;, &#x27;votesReceived&#x27;, &#x27;commentsReceived&#x27;, 
+            &#x27;myDebates&#x27;, &#x27;likesReceived&#x27;, &#x27;commentsOnMine&#x27;, &#x27;dailyTopic&#x27;
+        ));
+    }
+
+    // validazione test analisi ai e persistenza dati
+    public function store(Request $request)
+    {
+        $validated = $request-&gt;validate([
+            &#x27;title&#x27; =&gt; &#x27;required|string|max:255&#x27;,
+            &#x27;message&#x27; =&gt; &#x27;required|string&#x27;,
+        ]);
+
+        $textToAnalyze = $validated[&#x27;title&#x27;] . &quot; &quot; . $validated[&#x27;message&#x27;];
+
+        // check ai anti insulti
+        if ($this-&gt;moderator-&gt;isOffensive($textToAnalyze)) {
+            return back()-&gt;withErrors([&#x27;message&#x27; =&gt; &#x27;Linguaggio inappropriato rilevato. Rivedi il testo.&#x27;])-&gt;withInput(); 
+        }
+
+        $request-&gt;user()-&gt;debates()-&gt;create($validated);
+
+        return redirect()-&gt;route(&#x27;dashboard&#x27;)-&gt;with(&#x27;success&#x27;, &#x27;Dibattito pubblicato!&#x27;);
+    }
+
+    // autorizzazione validazione check ai e update
+    public function update(Request $request, Debate $debate)
+    {
+        if ($debate-&gt;user_id !== auth()-&gt;id()) abort(403);
+        $validated = $request-&gt;validate([
+            &#x27;title&#x27; =&gt; &#x27;required|string|max:255&#x27;,
+            &#x27;message&#x27; =&gt; &#x27;required|string|max:1000&#x27;,
+        ]);
+        $textToAnalyze = $validated[&#x27;title&#x27;] . &quot; &quot; . $validated[&#x27;message&#x27;];
+
+        // check ai su modifica
+        if ($this-&gt;moderator-&gt;isOffensive($textToAnalyze)) {
+            return back()-&gt;withErrors([&#x27;message&#x27; =&gt; &#x27;Linguaggio inappropriato rilevato. Rivedi il testo.&#x27;])-&gt;withInput();
+        }
+
+        $debate-&gt;update($validated);
+        return back()-&gt;with(&#x27;success&#x27;, &#x27;Dibattito aggiornato!&#x27;);
+    }
+
+    // autorizzazione e cancellazione record
+    public function destroy(Debate $debate)
+    {
+        if ($debate-&gt;user_id !== auth()-&gt;id()) abort(403);
+        $debate-&gt;delete();
+        return back()-&gt;with(&#x27;success&#x27;, &#x27;Dibattito eliminato.&#x27;);
+    }
+}</pre>
+  </div>
+</div>
+    <div class="hl-box mint">
+      <div class="hl-box-title">💡 Eager Loading con <code>with()</code></div>
+      <div class="hl-box-text">
+        <code style="color:var(--mint)">Debate::with(['user','likes','comments.user'])</code> è l'<strong>eager loading</strong> di Eloquent: 
+        carica in una sola query SQL tutte le relazioni necessarie, evitando il classico problema N+1 
+        (senza questo, ci sarebbero decine di query separate per ogni debate nella lista).
+      </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider"></div>
+<!-- ═══════════════════════════════════════════════════ LIVEWIRE -->
+<section class="section" id="livewire">
+  <div class="blob" style="width:400px;height:400px;background:#c084fc08;top:0;right:0;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">03 — Livewire & Volt</div>
+      <h2 class="sec-title">Frontend reattivo senza JavaScript</h2>
+      <p class="sec-sub">Livewire permette di creare interfacce dinamiche usando solo PHP e Blade, con comunicazione AJAX automatica al server.</p>
+    </div>
 
-<!-- SECTION CARDS -->
-<section id="preview">
-  <div class="preview-header reveal">
-    <h2 class="preview-title">Esplora il portfolio</h2>
-    <span style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;">3 sezioni</span>
+    <div class="talk-block blue">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~2 min</div>
+      <div class="talk-title">Presentare Livewire</div>
+      <div class="talk-text">
+        Uno dei punti tecnici più interessanti del progetto è <strong>Livewire</strong>. 
+        Normalmente, per avere un'interfaccia reattiva — cioè che si aggiorna senza ricaricare la pagina — 
+        bisogna scrivere JavaScript o usare framework come React o Vue.<br><br>
+        Con Livewire, tutto questo si fa in PHP. Ogni componente ha delle proprietà PHP e 
+        dei metodi PHP; quando l'utente interagisce col browser, Livewire fa una chiamata AJAX 
+        automatica al server, esegue il metodo PHP, e aggiorna solo la parte di HTML che è cambiata.<br><br>
+        Noi lo usiamo per il <strong>form di login</strong>, il <strong>profilo utente</strong>, 
+        e la <strong>navigazione</strong> dell'app.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <span class="filename">app/Livewire/Forms/LoginForm.php</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Livewire/Forms/LoginForm.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+          </div>
+<pre><span class="k">class</span> <span class="t">LoginForm</span> <span class="k">extends</span> <span class="t">Form</span>
+{
+    <span class="c">// Proprietà legate agli input HTML via wire:model</span>
+    <span class="k">public</span> <span class="t">string</span> <span class="v">$email</span> = <span class="s">''</span>;
+    <span class="k">public</span> <span class="t">string</span> <span class="v">$password</span> = <span class="s">''</span>;
+    <span class="k">public</span> <span class="t">bool</span> <span class="v">$remember</span> = <span class="k">false</span>;
+
+    <span class="k">public function</span> <span class="fn">authenticate</span>(): <span class="t">void</span>
+    {
+        <span class="c">// Validazione lato server automatica</span>
+        <span class="v">$this</span>-><span class="fn">validate</span>([
+            <span class="s">'email'</span>    => [<span class="s">'required'</span>, <span class="s">'string'</span>, <span class="s">'email'</span>],
+            <span class="s">'password'</span> => [<span class="s">'required'</span>, <span class="s">'string'</span>],
+        ]);
+
+        <span class="c">// Tentativo di login con throttle anti-brute-force</span>
+        <span class="k">if</span> (! <span class="t">Auth</span>::<span class="fn">attempt</span>(...)) {
+            <span class="k">throw</span> <span class="t">ValidationException</span>::<span class="fn">withMessages</span>([
+                <span class="s">'email'</span> => <span class="fn">trans</span>(<span class="s">'auth.failed'</span>),
+            ]);
+        }
+        <span class="t">Session</span>::<span class="fn">regenerate</span>();
+    }
+}</pre>
+        </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Livewire_Forms_LoginForm_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">LoginForm.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Livewire_Forms_LoginForm_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Livewire_Forms_LoginForm_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Livewire/Forms/LoginForm.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Livewire/Forms/LoginForm.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+
+namespace App\Livewire\Forms;
+
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Validate;
+use Livewire\Form;
+
+class LoginForm extends Form
+{
+    #[Validate(&#x27;required|string|email&#x27;)]
+    public string $email = &#x27;&#x27;;
+
+    #[Validate(&#x27;required|string&#x27;)]
+    public string $password = &#x27;&#x27;;
+
+    #[Validate(&#x27;boolean&#x27;)]
+    public bool $remember = false;
+
+    /**
+     * Attempt to authenticate the request&#x27;s credentials.
+     *
+     * @throws ValidationException
+     */
+    public function authenticate(): void
+    {
+        $this-&gt;ensureIsNotRateLimited();
+
+        if (! Auth::attempt($this-&gt;only([&#x27;email&#x27;, &#x27;password&#x27;]), $this-&gt;remember)) {
+            RateLimiter::hit($this-&gt;throttleKey());
+
+            throw ValidationException::withMessages([
+                &#x27;form.email&#x27; =&gt; trans(&#x27;auth.failed&#x27;),
+            ]);
+        }
+
+        RateLimiter::clear($this-&gt;throttleKey());
+    }
+
+    /**
+     * Ensure the authentication request is not rate limited.
+     */
+    protected function ensureIsNotRateLimited(): void
+    {
+        if (! RateLimiter::tooManyAttempts($this-&gt;throttleKey(), 5)) {
+            return;
+        }
+
+        event(new Lockout(request()));
+
+        $seconds = RateLimiter::availableIn($this-&gt;throttleKey());
+
+        throw ValidationException::withMessages([
+            &#x27;form.email&#x27; =&gt; trans(&#x27;auth.throttle&#x27;, [
+                &#x27;seconds&#x27; =&gt; $seconds,
+                &#x27;minutes&#x27; =&gt; ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    /**
+     * Get the authentication rate limiting throttle key.
+     */
+    protected function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this-&gt;email).&#x27;|&#x27;.request()-&gt;ip());
+    }
+}
+</pre>
   </div>
-  <div class="card-grid reveal">
-    <a href="timeline.html" class="page-card">
-      <div class="page-card-icon">📅</div>
-      <div class="page-card-title">Timeline dei Progetti</div>
-      <div class="page-card-desc">Tutti i percorsi FSL del triennio — 23 progetti con aziende come Accenture, IBM, Oracle, Leonardo SpA e altri.</div>
-      <div class="page-card-cta">Vai alla timeline →</div>
-    </a>
-    <a href="competenze.html" class="page-card">
-      <div class="page-card-icon">🧠</div>
-      <div class="page-card-title">Competenze Acquisite</div>
-      <div class="page-card-desc">Mappa delle skill tecniche e trasversali sviluppate durante il percorso: dall'informatica alle soft skill aziendali.</div>
-      <div class="page-card-cta">Vai alle competenze →</div>
-    </a>
-    <a href="profilo.html" class="page-card">
-      <div class="page-card-icon">👤</div>
-      <div class="page-card-title">Il Mio Profilo</div>
-      <div class="page-card-desc">Chi sono, i miei interessi, le mie aspirazioni e il percorso che mi ha portato fin qui.</div>
-      <div class="page-card-cta">Vai al profilo →</div>
-    </a>
+</div>
+      </div>
+      <div>
+        <div class="hl-box" style="height:100%;">
+          <div class="hl-box-title">⚡ Come funziona wire:model</div>
+          <div class="hl-box-text" style="line-height:2;">
+            Nel template Blade il campo email è semplicemente:<br>
+            <code style="color:var(--accent);font-family:'DM Mono',monospace;">&lt;input wire:model="email" /&gt;</code><br><br>
+            Ogni volta che l'utente digita, Livewire aggiorna automaticamente la proprietà PHP 
+            <code style="color:var(--accent)">$email</code> senza scrivere una riga di JavaScript.<br><br>
+            Il metodo <code style="color:var(--accent)">authenticate()</code> viene chiamato al submit, 
+            direttamente sul server, con validazione e gestione errori inclusa.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<footer>
-  <span>ITT "Panetti-Pitagora" · Via Re David 186, Bari</span>
-  <span>Relazione Finale FSL · V ITIA C · A.S. 2025/26</span>
-</footer>
+<!-- ═══════════════════════════════════════════════════ AUTH -->
+<section class="section" id="auth">
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">04 — Autenticazione</div>
+      <h2 class="sec-title">Login, Registrazione e Ruoli</h2>
+      <p class="sec-sub">Laravel Breeze fornisce lo scaffolding completo per auth. Noi abbiamo aggiunto il sistema di ruoli con middleware custom.</p>
+    </div>
+
+    <div class="talk-block">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~2 min</div>
+      <div class="talk-title">Spiegare il sistema di autenticazione</div>
+      <div class="talk-text">
+        L'autenticazione è gestita da <strong>Laravel Breeze</strong>, che ci ha fornito 
+        le pagine di login, registrazione, reset password e verifica email già funzionanti. 
+        Noi abbiamo aggiunto sopra un sistema di <strong>ruoli</strong>: ogni utente ha un campo 
+        <em>role</em> nel database, con valore di default <em>'user'</em>. 
+        I moderatori hanno <em>role = 'moderator'</em>.<br><br>
+        Per proteggere le rotte admin, abbiamo scritto un <strong>Middleware custom</strong> 
+        chiamato <em>EnsureModerator</em>: intercetta ogni richiesta verso <em>/moderator/*</em> 
+        e verifica il ruolo. Se l'utente non è un moderatore, riceve un errore 403.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <span class="filename">app/Http/Middleware/EnsureModerator.php</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Middleware/EnsureModerator.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+          </div>
+<pre><span class="k">class</span> <span class="t">EnsureModerator</span>
+{
+    <span class="k">public function</span> <span class="fn">handle</span>(
+        <span class="t">Request</span> <span class="v">$request</span>,
+        <span class="t">Closure</span> <span class="v">$next</span>
+    ) {
+        <span class="c">// Blocca ospiti o utenti senza ruolo moderatore</span>
+        <span class="k">if</span> (! <span class="fn">auth</span>()-><span class="fn">check</span>()
+            || ! <span class="fn">auth</span>()-><span class="fn">user</span>()-><span class="fn">isModerator</span>()) {
+
+            <span class="fn">abort</span>(<span class="num">403</span>, <span class="s">'Accesso riservato ai moderatori.'</span>);
+        }
+
+        <span class="c">// Utente autorizzato: procede</span>
+        <span class="k">return</span> <span class="v">$next</span>(<span class="v">$request</span>);
+    }
+}</pre>
+        </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Http_Middleware_EnsureModerator_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">EnsureModerator.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Http_Middleware_EnsureModerator_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Http_Middleware_EnsureModerator_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Http/Middleware/EnsureModerator.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Middleware/EnsureModerator.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+// middleware di protezione rotte riservate ai soli moderatori
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class EnsureModerator
+{
+    // intercettazione richiesta e controllo privilegi account
+    public function handle(Request $request, Closure $next)
+    {
+        // blocco accesso se utente ospite o senza ruolo adatto
+        if (!auth()-&gt;check() || !auth()-&gt;user()-&gt;isModerator()) {
+            // interruzione ed emissione errore autorizzazione
+            abort(403, &#x27;Accesso riservato ai moderatori.&#x27;);
+        }
+
+        // autorizzazione e passaggio al livello successivo
+        return $next($request);
+    }
+}</pre>
+  </div>
+</div>
+      </div>
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <span class="filename">app/Models/User.php — metodi ruolo</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/User.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+          </div>
+<pre><span class="c">// Attributi gestiti con PHP 8 Attributes</span>
+<span class="a">#[Fillable(['name', 'email', 'password'])]</span>
+<span class="a">#[Hidden(['password', 'remember_token'])]</span>
+<span class="k">class</span> <span class="t">User</span> <span class="k">extends</span> <span class="t">Authenticatable</span>
+{
+    <span class="c">// Cast automatico: password sempre hashata</span>
+    <span class="k">protected function</span> <span class="fn">casts</span>(): <span class="t">array</span>
+    {
+        <span class="k">return</span> [
+            <span class="s">'password'</span> => <span class="s">'hashed'</span>,
+        ];
+    }
+
+    <span class="k">public function</span> <span class="fn">isModerator</span>(): <span class="t">bool</span>
+    {
+        <span class="k">return</span> <span class="v">$this</span>->role === <span class="s">'moderator'</span>;
+    }
+
+    <span class="c">// Relazioni Eloquent</span>
+    <span class="k">public function</span> <span class="fn">debates</span>()
+    { <span class="k">return</span> <span class="v">$this</span>-><span class="fn">hasMany</span>(<span class="t">Debate</span>::<span class="k">class</span>); }
+
+    <span class="k">public function</span> <span class="fn">likes</span>()
+    { <span class="k">return</span> <span class="v">$this</span>-><span class="fn">hasMany</span>(<span class="t">Like</span>::<span class="k">class</span>); }
+}</pre>
+        </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Models_User_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">User.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Models_User_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Models_User_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Models/User.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/User.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+#[Fillable([&#x27;name&#x27;, &#x27;email&#x27;, &#x27;password&#x27;])]
+#[Hidden([&#x27;password&#x27;, &#x27;remember_token&#x27;])]
+class User extends Authenticatable
+{
+    /** @use HasFactory&lt;UserFactory&gt; */
+    use HasFactory, Notifiable;
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array&lt;string, string&gt;
+     */
+    protected function casts(): array
+    {
+        return [
+            &#x27;email_verified_at&#x27; =&gt; &#x27;datetime&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;hashed&#x27;,
+        ];
+    }
+    public function debates()
+    {
+        return $this-&gt;hasMany(Debate::class);
+    }
+
+    public function likes()
+    {
+        return $this-&gt;hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this-&gt;hasMany(Comment::class);
+    }
+
+
+
+    public function isModerator(): bool
+    {
+        return $this-&gt;role === &#x27;moderator&#x27;;
+    }
+
+    public function isUser(): bool
+    {
+        return $this-&gt;role === &#x27;user&#x27;;
+    }
+}
+</pre>
+  </div>
+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ DEBATE -->
+<section class="section" id="debate">
+  <div class="blob" style="width:450px;height:450px;background:#e8ff4706;bottom:-100px;right:-80px;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">05 — Gestione Debate</div>
+      <h2 class="sec-title">Crea, vota, commenta</h2>
+      <p class="sec-sub">Il flusso completo: dalla creazione di un debate, ai like con risposta JSON, ai commenti salvati in tempo reale.</p>
+    </div>
+
+    <div class="talk-block mint">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~3 min</div>
+      <div class="talk-title">Il cuore funzionale di UDebate</div>
+      <div class="talk-text">
+        Mostriamo adesso il flusso principale. Un utente vuole creare un debate: 
+        compila titolo e messaggio nel form, preme "Crea". Il form fa una <strong>POST a /debates</strong>, 
+        che arriva al metodo <em>store()</em> del DebateController.<br><br>
+        Qui succedono tre cose in sequenza: prima la <strong>validazione</strong> Laravel dei campi, 
+        poi il <strong>controllo AI</strong> di Groq (lo vediamo nella prossima sezione), 
+        e infine il <strong>salvataggio nel database</strong> tramite Eloquent con <em>create()</em>.<br><br>
+        Per i <strong>like</strong>, invece, usiamo la pattern del "toggle": se l'utente ha già 
+        messo like, lo togliamo — altrimenti lo aggiungiamo. La risposta è <strong>JSON</strong>, 
+        perché il frontend aggiorna il contatore senza ricaricare la pagina.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <span class="filename">app/Http/Controllers/DebateController.php — store()</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/DebateController.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+      </div>
+<pre><span class="k">public function</span> <span class="fn">store</span>(<span class="t">Request</span> <span class="v">$request</span>)
+{
+    <span class="c">// 1. Validazione Laravel: campi required, tipo e lunghezza</span>
+    <span class="v">$validated</span> = <span class="v">$request</span>-><span class="fn">validate</span>([
+        <span class="s">'title'</span>   => <span class="s">'required|string|max:255'</span>,
+        <span class="s">'message'</span> => <span class="s">'required|string'</span>,
+    ]);
+
+    <span class="c">// 2. Analisi AI anti-insulti (Groq LLaMA 3.1)</span>
+    <span class="v">$textToAnalyze</span> = <span class="v">$validated</span>[<span class="s">'title'</span>] . <span class="s">' '</span> . <span class="v">$validated</span>[<span class="s">'message'</span>];
+
+    <span class="k">if</span> (<span class="v">$this</span>->moderator-><span class="fn">isOffensive</span>(<span class="v">$textToAnalyze</span>)) {
+        <span class="k">return</span> <span class="fn">back</span>()
+            -><span class="fn">withErrors</span>([<span class="s">'message'</span> => <span class="s">'Linguaggio inappropriato rilevato.'</span>])
+            -><span class="fn">withInput</span>(); <span class="c">// mantiene i valori nel form</span>
+    }
+
+    <span class="c">// 3. Salvataggio: relazione user -> debates</span>
+    <span class="v">$request</span>-><span class="fn">user</span>()-><span class="fn">debates</span>()-><span class="fn">create</span>(<span class="v">$validated</span>);
+
+    <span class="k">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="s">'dashboard'</span>)
+                    -><span class="fn">with</span>(<span class="s">'success'</span>, <span class="s">'Dibattito pubblicato!'</span>);
+}</pre>
+    </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Http_Controllers_DebateController_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">DebateController.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Http_Controllers_DebateController_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Http_Controllers_DebateController_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Http/Controllers/DebateController.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/DebateController.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+
+// gestione dibattiti e dashboard con moderazione ai
+
+namespace App\Http\Controllers;
+
+use App\Models\Debate;
+use Illuminate\Http\Request;
+use App\Models\Like;
+use App\Models\Comment;
+use App\Services\GroqModerationService; 
+use App\Models\DailyTopic;
+
+class DebateController extends Controller
+{
+    protected $moderator;
+
+    // injection servizio moderazione
+    public function __construct(GroqModerationService $moderator)
+    {
+        $this-&gt;moderator = $moderator;
+    }
+
+    // lettura dati statistiche e topic del giorno
+    // Lettura dati statistiche, topic del giorno e gestione ricerca
+    public function index(Request $request)
+    {
+        $search = $request-&gt;input(&#x27;q&#x27;);
+
+        $user = auth()-&gt;user();
+        $dailyTopic = DailyTopic::latest()-&gt;first();
+
+
+        $debates = Debate::with([&#x27;user&#x27;, &#x27;likes&#x27;, &#x27;comments.user&#x27;])
+            -&gt;when($search, function ($query, $search) {
+                $query-&gt;where(&#x27;title&#x27;, &#x27;like&#x27;, &#x27;%&#x27; . $search . &#x27;%&#x27;)
+                      -&gt;orWhere(&#x27;message&#x27;, &#x27;like&#x27;, &#x27;%&#x27; . $search . &#x27;%&#x27;);
+            })
+            -&gt;latest()
+            -&gt;get();
+
+        $debatesCount     = $user-&gt;debates()-&gt;count();
+        $votesReceived    = Like::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;count();
+        $commentsReceived = Comment::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;count();
+
+        $myDebates        = $user-&gt;debates()-&gt;latest()-&gt;take(5)-&gt;get();
+        $likesReceived    = Like::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;with(&#x27;debate&#x27;)-&gt;latest()-&gt;take(5)-&gt;get();
+        $commentsOnMine   = Comment::whereIn(&#x27;debate_id&#x27;, $user-&gt;debates()-&gt;pluck(&#x27;id&#x27;))-&gt;with([&#x27;user&#x27;, &#x27;debate&#x27;])-&gt;latest()-&gt;take(5)-&gt;get();
+
+        return view(&#x27;dashboard&#x27;, compact(
+            &#x27;debates&#x27;, &#x27;debatesCount&#x27;, &#x27;votesReceived&#x27;, &#x27;commentsReceived&#x27;, 
+            &#x27;myDebates&#x27;, &#x27;likesReceived&#x27;, &#x27;commentsOnMine&#x27;, &#x27;dailyTopic&#x27;
+        ));
+    }
+
+    // validazione test analisi ai e persistenza dati
+    public function store(Request $request)
+    {
+        $validated = $request-&gt;validate([
+            &#x27;title&#x27; =&gt; &#x27;required|string|max:255&#x27;,
+            &#x27;message&#x27; =&gt; &#x27;required|string&#x27;,
+        ]);
+
+        $textToAnalyze = $validated[&#x27;title&#x27;] . &quot; &quot; . $validated[&#x27;message&#x27;];
+
+        // check ai anti insulti
+        if ($this-&gt;moderator-&gt;isOffensive($textToAnalyze)) {
+            return back()-&gt;withErrors([&#x27;message&#x27; =&gt; &#x27;Linguaggio inappropriato rilevato. Rivedi il testo.&#x27;])-&gt;withInput(); 
+        }
+
+        $request-&gt;user()-&gt;debates()-&gt;create($validated);
+
+        return redirect()-&gt;route(&#x27;dashboard&#x27;)-&gt;with(&#x27;success&#x27;, &#x27;Dibattito pubblicato!&#x27;);
+    }
+
+    // autorizzazione validazione check ai e update
+    public function update(Request $request, Debate $debate)
+    {
+        if ($debate-&gt;user_id !== auth()-&gt;id()) abort(403);
+        $validated = $request-&gt;validate([
+            &#x27;title&#x27; =&gt; &#x27;required|string|max:255&#x27;,
+            &#x27;message&#x27; =&gt; &#x27;required|string|max:1000&#x27;,
+        ]);
+        $textToAnalyze = $validated[&#x27;title&#x27;] . &quot; &quot; . $validated[&#x27;message&#x27;];
+
+        // check ai su modifica
+        if ($this-&gt;moderator-&gt;isOffensive($textToAnalyze)) {
+            return back()-&gt;withErrors([&#x27;message&#x27; =&gt; &#x27;Linguaggio inappropriato rilevato. Rivedi il testo.&#x27;])-&gt;withInput();
+        }
+
+        $debate-&gt;update($validated);
+        return back()-&gt;with(&#x27;success&#x27;, &#x27;Dibattito aggiornato!&#x27;);
+    }
+
+    // autorizzazione e cancellazione record
+    public function destroy(Debate $debate)
+    {
+        if ($debate-&gt;user_id !== auth()-&gt;id()) abort(403);
+        $debate-&gt;delete();
+        return back()-&gt;with(&#x27;success&#x27;, &#x27;Dibattito eliminato.&#x27;);
+    }
+}</pre>
+  </div>
+</div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <span class="filename">app/Http/Controllers/LikeController.php — toggle()</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/LikeController.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+      </div>
+<pre><span class="k">public function</span> <span class="fn">toggle</span>(<span class="t">Debate</span> <span class="v">$debate</span>)
+{
+    <span class="v">$user</span>     = <span class="fn">auth</span>()-><span class="fn">user</span>();
+    <span class="v">$hasLiked</span> = <span class="v">$debate</span>-><span class="fn">isLikedBy</span>(<span class="v">$user</span>); <span class="c">// controlla se già presente</span>
+
+    <span class="k">if</span> (<span class="v">$hasLiked</span>) {
+        <span class="c">// Rimozione like esistente</span>
+        <span class="v">$debate</span>-><span class="fn">likes</span>()-><span class="fn">where</span>(<span class="s">'user_id'</span>, <span class="v">$user</span>->id)-><span class="fn">delete</span>();
+        <span class="v">$isNowLiked</span> = <span class="k">false</span>;
+    } <span class="k">else</span> {
+        <span class="c">// Inserimento nuovo like</span>
+        <span class="v">$debate</span>-><span class="fn">likes</span>()-><span class="fn">create</span>([<span class="s">'user_id'</span> => <span class="v">$user</span>->id]);
+        <span class="v">$isNowLiked</span> = <span class="k">true</span>;
+    }
+
+    <span class="c">// Risposta JSON per aggiornamento frontend senza reload</span>
+    <span class="k">if</span> (<span class="fn">request</span>()-><span class="fn">wantsJson</span>()) {
+        <span class="k">return</span> <span class="fn">response</span>()-><span class="fn">json</span>([
+            <span class="s">'liked'</span> => <span class="v">$isNowLiked</span>,
+            <span class="s">'count'</span> => <span class="v">$debate</span>-><span class="fn">likes</span>()-><span class="fn">count</span>()
+        ]);
+    }
+    <span class="k">return</span> <span class="fn">back</span>();
+}</pre>
+    </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Http_Controllers_LikeController_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">LikeController.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Http_Controllers_LikeController_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Http_Controllers_LikeController_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Http/Controllers/LikeController.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/LikeController.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+
+// gestione dei mi piace sui dibattiti con logica di toggle
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Debate;
+
+class LikeController extends Controller
+{
+    // inversione stato del mi piace
+    public function toggle(Debate $debate)
+    {
+        // recupero utente autenticato
+        $user = auth()-&gt;user();
+        // verifica esistenza mi piace precedente
+        $hasLiked = $debate-&gt;isLikedBy($user);
+
+        // rimozione o inserimento record mi piace
+        if ($hasLiked) {
+            // rimozione mi piace dal database
+            $debate-&gt;likes()-&gt;where(&#x27;user_id&#x27;, $user-&gt;id)-&gt;delete();
+            $isNowLiked = false;
+
+        } else {
+            // creazione nuovo mi piace nel database
+            $debate-&gt;likes()-&gt;create([
+                &#x27;user_id&#x27; =&gt; $user-&gt;id
+            ]);
+            $isNowLiked = true;
+        }
+
+        // risposta per richiesta asincrona frontend
+        if (request()-&gt;wantsJson()) {
+            // restituzione stato e contatore aggiornato
+            return response()-&gt;json([
+                &#x27;liked&#x27; =&gt; $isNowLiked, 
+                &#x27;count&#x27; =&gt; $debate-&gt;likes()-&gt;count() 
+            ]);
+        }
+        return back();
+    }
+}</pre>
+  </div>
+</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ AI -->
+<section class="section" id="ai">
+  <div class="blob" style="width:400px;height:400px;background:#ff475708;top:0;left:-50px;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">06 — Moderazione AI</div>
+      <h2 class="sec-title">Groq + LLaMA 3.1 — anti-insulti</h2>
+      <p class="sec-sub">Ogni testo pubblicato viene analizzato da un LLM prima di essere salvato. È la funzionalità più originale del progetto.</p>
+    </div>
+
+    <div class="talk-block red">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~2 min</div>
+      <div class="talk-title">La feature più originale: l'AI nel backend</div>
+      <div class="talk-text">
+        Questa è probabilmente la parte più originale del nostro progetto. 
+        Abbiamo integrato <strong>Groq</strong>, un servizio di AI inference ad alta velocità, 
+        che usa il modello <strong>LLaMA 3.1 8B Instant</strong>.<br><br>
+        La logica è semplice ma efficace: prima di salvare qualsiasi testo nel database, 
+        il <em>GroqModerationService</em> fa una chiamata HTTP all'API di Groq 
+        passando il testo da analizzare. Il modello riceve un <strong>system prompt in italiano</strong> 
+        che gli dice di rispondere solo <em>"true"</em> se il testo è offensivo, o <em>"false"</em> se è ok.<br><br>
+        Temperature a 0 e max_tokens a 5: questo rende la risposta <strong>deterministica e velocissima</strong> 
+        (è una risposta di una sola parola). Costo quasi zero, latenza minima.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <span class="filename">app/Services/GroqModerationService.php</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Services/GroqModerationService.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+      </div>
+<pre><span class="k">public function</span> <span class="fn">isOffensive</span>(<span class="t">string</span> <span class="v">$text</span>): <span class="t">bool</span>
+{
+    <span class="v">$apiKey</span> = <span class="fn">env</span>(<span class="s">'GROQ_API_KEY'</span>);
+
+    <span class="c">// Chiamata HTTP a Groq con LLaMA 3.1 8B</span>
+    <span class="v">$response</span> = <span class="t">Http</span>::<span class="fn">withToken</span>(<span class="v">$apiKey</span>)
+        -><span class="fn">post</span>(<span class="s">'https://api.groq.com/openai/v1/chat/completions'</span>, [
+            <span class="s">'model'</span>       => <span class="s">'llama-3.1-8b-instant'</span>,
+            <span class="s">'messages'</span>    => [
+                [
+                    <span class="s">'role'</span>    => <span class="s">'system'</span>,
+                    <span class="s">'content'</span> => <span class="s">'Sei un moderatore severo. Il testo
+è in ITALIANO. Se contiene insulti, parolacce, odio o
+volgarità, rispondi SOLO con la parola "true".
+Altrimenti rispondi SOLO con la parola "false".'</span>
+                ],
+                [<span class="s">'role'</span> => <span class="s">'user'</span>, <span class="s">'content'</span> => <span class="v">$text</span>]
+            ],
+            <span class="s">'temperature'</span> => <span class="num">0</span>,     <span class="c">// risposta deterministica</span>
+            <span class="s">'max_tokens'</span>  => <span class="num">5</span>      <span class="c">// basta una parola</span>
+        ]);
+
+    <span class="k">if</span> (<span class="v">$response</span>-><span class="fn">successful</span>()) {
+        <span class="v">$result</span> = <span class="fn">trim</span>(<span class="fn">strtolower</span>(
+            <span class="v">$response</span>-><span class="fn">json</span>(<span class="s">'choices.0.message.content'</span>)
+        ));
+        <span class="k">return</span> <span class="fn">str_contains</span>(<span class="v">$result</span>, <span class="s">'true'</span>);
+    }
+    <span class="k">return</span> <span class="k">false</span>; <span class="c">// in caso di errore API: lascia passare</span>
+}</pre>
+    </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Services_GroqModerationService_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">GroqModerationService.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Services_GroqModerationService_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Services_GroqModerationService_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Services/GroqModerationService.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Services/GroqModerationService.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+namespace App\Services;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class GroqModerationService
+{
+    // analisi del testo per rilevamento contenuti offensivi
+    public function isOffensive(string $text): bool
+    {
+        $apiKey = env(&#x27;GROQ_API_KEY&#x27;);
+
+        // check presenza chiave ambiente e logging errore di configurazione
+        if (empty($apiKey)) {
+            Log::error(&#x27;Groq API Key mancante nel file .env&#x27;);
+            return false; 
+        }
+
+        // chiamata http post verso groq con impostazione istruzioni di sistema
+        $response = Http::withToken($apiKey)
+            -&gt;post(&#x27;https://api.groq.com/openai/v1/chat/completions&#x27;, [
+                &#x27;model&#x27; =&gt; &#x27;llama-3.1-8b-instant&#x27;, //modello facilmente integrabile
+                &#x27;messages&#x27; =&gt; [
+                    [
+                        &#x27;role&#x27; =&gt; &#x27;system&#x27;,
+                        &#x27;content&#x27; =&gt; &#x27;Sei un moderatore severo. Il testo dell\&#x27;utente è in ITALIANO. Se il testo contiene insulti, parolacce, odio o volgarità, rispondi ESATTAMENTE E SOLO con la parola &quot;true&quot;. Se il testo è pulito e normale, rispondi ESATTAMENTE E SOLO con la parola &quot;false&quot;. Non aggiungere nessuna punteggiatura o altra parola.&#x27;
+                    ],
+                    [
+                        &#x27;role&#x27; =&gt; &#x27;user&#x27;,
+                        &#x27;content&#x27; =&gt; $text
+                    ]
+                ],
+                &#x27;temperature&#x27; =&gt; 0,
+                &#x27;max_tokens&#x27; =&gt; 5 
+            ]);
+
+        // lettura esito positivo e parsing della risposta booleana ricevuta
+        if ($response-&gt;successful()) {
+            $result = trim(strtolower($response-&gt;json(&#x27;choices.0.message.content&#x27;)));
+            return str_contains($result, &#x27;true&#x27;);
+        }
+
+        Log::error(&#x27;Errore chiamata Groq API: &#x27; . $response-&gt;body());        
+        return false;
+    }
+}</pre>
+  </div>
+</div>
+
+    <div class="hl-box red">
+      <div class="hl-box-title">🤖 Perché questa scelta tecnica funziona</div>
+      <div class="hl-box-text">
+        <strong>Temperature 0</strong> = nessuna creatività, risposta sempre uguale per lo stesso input. 
+        <strong>Max tokens 5</strong> = il modello non può scrivere più di una parola, risparmiando 
+        token e riducendo la latenza a ~200ms. Il <strong>system prompt in italiano</strong> 
+        è cruciale: i modelli capiscono meglio le istruzioni nella stessa lingua del testo da analizzare.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ MODERATORE -->
+<section class="section" id="moderator">
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">07 — Pannello Moderatore</div>
+      <h2 class="sec-title">Gestione della piattaforma</h2>
+      <p class="sec-sub">Il moderatore ha un pannello dedicato per monitorare la piattaforma e impostare il topic del giorno.</p>
+    </div>
+
+    <div class="talk-block purple">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~1 min</div>
+      <div class="talk-title">Il pannello admin</div>
+      <div class="talk-text">
+        Il pannello moderatore è accessibile solo agli account con ruolo <em>moderator</em>. 
+        Da qui si vede il totale degli utenti iscritti e dei debate pubblicati, 
+        e soprattutto si può impostare il <strong>topic del giorno</strong>: 
+        una domanda o un tema che viene mostrato a tutti gli utenti nella dashboard 
+        come spunto per aprire nuovi debate.<br><br>
+        Anche questo input passa attraverso la moderazione AI prima di essere salvato.
+        Usiamo <code style="color:var(--purple)">updateOrCreate()</code> di Eloquent: 
+        se esiste già un topic con id=1, lo aggiorna; altrimenti lo crea. 
+        C'è sempre e solo un topic del giorno attivo.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <span class="filename">app/Http/Controllers/ModeratorController.php — updateTopic()</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/ModeratorController.php" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+      </div>
+<pre><span class="k">public function</span> <span class="fn">updateTopic</span>(<span class="t">Request</span> <span class="v">$request</span>)
+{
+    <span class="v">$request</span>-><span class="fn">validate</span>([
+        <span class="s">'topic'</span> => <span class="s">'required|string|max:255'</span>
+    ]);
+
+    <span class="c">// Check AI prima del salvataggio</span>
+    <span class="k">if</span> (<span class="v">$this</span>->moderator-><span class="fn">isOffensive</span>(<span class="v">$request</span>->topic)) {
+        <span class="k">return</span> <span class="fn">back</span>()-><span class="fn">withErrors</span>([
+            <span class="s">'topic'</span> => <span class="s">'Il topic inserito è inappropriato.'</span>
+        ]);
+    }
+
+    <span class="c">// updateOrCreate: aggiorna se id=1 esiste, crea altrimenti</span>
+    <span class="t">DailyTopic</span>::<span class="fn">updateOrCreate</span>(
+        [<span class="s">'id'</span> => <span class="num">1</span>],
+        [<span class="s">'topic'</span> => <span class="v">$request</span>->topic]
+    );
+
+    <span class="k">return</span> <span class="fn">back</span>()-><span class="fn">with</span>(<span class="s">'success'</span>, <span class="s">'Topic aggiornato!'</span>);
+}</pre>
+    </div>
+<div class="full-file-wrap">
+  <button class="full-file-toggle" onclick="toggleFile('app_Http_Controllers_ModeratorController_php')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Vedi file completo: <span style="color:var(--accent);font-family:'DM Mono',monospace;">ModeratorController.php</span>
+    <svg class="toggle-arrow" id="arrow_app_Http_Controllers_ModeratorController_php" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="full-file-content" id="file_app_Http_Controllers_ModeratorController_php" style="display:none;">
+    <div class="code-header" style="border-radius:0;">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <span class="filename">app/Http/Controllers/ModeratorController.php</span>
+      <a href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/ModeratorController.php" target="_blank" class="gh-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri su GitHub
+      </a>
+    </div>
+    <pre style="max-height:520px;overflow-y:auto;border-radius:0 0 14px 14px;">&lt;?php
+
+// pannello di controllo moderatore e gestione del topic del giorno
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Debate;
+use App\Models\DailyTopic;
+use App\Services\GroqModerationService;
+
+class ModeratorController extends Controller
+{
+    protected $moderator;
+    
+    // injection servizio di controllo ai
+    public function __construct(GroqModerationService $moderator)
+    {
+        $this-&gt;moderator = $moderator;
+    }
+
+    // conteggio record e lettura ultimo topic attivo
+    public function index()
+    {
+        // statistiche generali piattaforma
+        $usersCount = User::count();
+        $debatesCount = Debate::count();
+        
+        // recupero del tema odierno
+        $currentTopic = DailyTopic::latest()-&gt;first();
+
+        return view(&#x27;moderator.dashboard&#x27;, compact(&#x27;usersCount&#x27;, &#x27;debatesCount&#x27;, &#x27;currentTopic&#x27;));
+    }
+
+    // validazione check ai e persistenza del nuovo topic
+    public function updateTopic(Request $request)
+    {
+        // controllo stringa in entrata
+        $request-&gt;validate([
+            &#x27;topic&#x27; =&gt; &#x27;required|string|max:255&#x27;
+        ]);
+
+        // verifica ai anti insulti sul topic
+        if ($this-&gt;moderator-&gt;isOffensive($request-&gt;topic)) {
+            return back()-&gt;withErrors([&#x27;topic&#x27; =&gt; &#x27;Il topic inserito è inappropriato.&#x27;]);
+        }
+
+        // salvataggio o sovrascrittura record con id fisso
+        DailyTopic::updateOrCreate(
+            [&#x27;id&#x27; =&gt; 1], 
+            [&#x27;topic&#x27; =&gt; $request-&gt;topic]
+        );
+
+        return back()-&gt;with(&#x27;success&#x27;, &#x27;Topic del giorno aggiornato correttamente!&#x27;);
+    }
+}</pre>
+  </div>
+</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ DATABASE -->
+<section class="section" id="database">
+  <div class="blob" style="width:400px;height:400px;background:#3d8bff06;bottom:0;right:0;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">08 — Database</div>
+      <h2 class="sec-title">Schema relazionale & Migrations</h2>
+      <p class="sec-sub">Il database è versionato tramite Migrations Laravel. Ogni tabella è una classe PHP — mai più SQL scritto a mano.</p>
+    </div>
+
+    <div class="talk-block blue">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~1 min</div>
+      <div class="talk-title">Le migrations e lo schema</div>
+      <div class="talk-text">
+        In Laravel, lo schema del database non si crea manualmente con SQL: 
+        si usano le <strong>Migrations</strong>, file PHP che descrivono ogni modifica al DB. 
+        Il comando <em>php artisan migrate</em> le esegue in ordine. 
+        Questo ci permette di ricreare l'intero database su qualsiasi macchina — 
+        incluso il container Docker — con un solo comando.<br><br>
+        Le relazioni nel codice sono:<br>
+        <em>User hasMany Debates → Debate hasMany Comments/Likes → Like/Comment belongsTo User</em>
+      </div>
+    </div>
+
+    <div class="db-grid">
+      <div class="db-table">
+        <div class="db-head" style="background:#ff4757;">users</div>
+        <div class="db-field pk">id (PK)</div>
+        <div class="db-field">name</div>
+        <div class="db-field">email</div>
+        <div class="db-field">password (hashed)</div>
+        <div class="db-field" style="color:var(--purple);">role (default: user)</div>
+        <div class="db-field">email_verified_at</div>
+        <div class="db-field">timestamps</div>
+      </div>
+      <div class="db-table">
+        <div class="db-head" style="background:#3d8bff;">debates</div>
+        <div class="db-field pk">id (PK)</div>
+        <div class="db-field">title</div>
+        <div class="db-field">message (text)</div>
+        <div class="db-field fk">user_id (FK → users)</div>
+        <div class="db-field">timestamps</div>
+      </div>
+      <div class="db-table">
+        <div class="db-head" style="background:#34d399;color:#000;">comments</div>
+        <div class="db-field pk">id (PK)</div>
+        <div class="db-field">body</div>
+        <div class="db-field fk">user_id (FK → users)</div>
+        <div class="db-field fk">debate_id (FK → debates)</div>
+        <div class="db-field">timestamps</div>
+      </div>
+      <div class="db-table">
+        <div class="db-head" style="background:#c084fc;">likes</div>
+        <div class="db-field pk">id (PK)</div>
+        <div class="db-field fk">user_id (FK → users)</div>
+        <div class="db-field fk">debate_id (FK → debates)</div>
+        <div class="db-field" style="color:var(--accent);">UNIQUE(user_id, debate_id)</div>
+        <div class="db-field">timestamps</div>
+      </div>
+    </div>
+
+    <div class="hl-box blue">
+      <div class="hl-box-title">🔑 Unique constraint sui Like</div>
+      <div class="hl-box-text">
+        La tabella <code style="color:var(--blue)">likes</code> ha un vincolo UNIQUE su 
+        <code style="color:var(--blue)">(user_id, debate_id)</code>: 
+        questo impedisce a livello di database che lo stesso utente metta like due volte allo stesso debate, 
+        anche se ci fosse un bug nel codice PHP. La sicurezza è duplice: nel Controller e nel DB.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ DOCKER -->
+<section class="section" id="docker">
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">09 — Deploy</div>
+      <h2 class="sec-title">Docker Compose — tre container, un comando</h2>
+      <p class="sec-sub">L'intera infrastruttura è containerizzata: l'app Laravel, il database MySQL e phpMyAdmin si avviano insieme.</p>
+    </div>
+
+    <div class="talk-block">
+      <div class="talk-label">📢 Cosa dire</div>
+      <div class="talk-time">~1 min</div>
+      <div class="talk-title">Presentare il deploy con Docker</div>
+      <div class="talk-text">
+        Per rendere il progetto facilmente avviabile su qualsiasi macchina, 
+        abbiamo usato <strong>Docker Compose</strong>. Con un unico file <em>docker-compose.yml</em> 
+        definiamo tre servizi:<br><br>
+        <strong>app</strong> — l'applicazione Laravel con PHP 8.3, costruita dal nostro Dockerfile.<br>
+        <strong>db</strong> — MySQL 8.0 con volume persistente, così i dati non si perdono al riavvio.<br>
+        <strong>phpmyadmin</strong> — interfaccia web per ispezionare il database durante lo sviluppo.<br><br>
+        Per avviare tutto: <em>docker compose up --build</em>. Fine.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <span class="filename">docker-compose.yml (struttura semplificata)</span><a href="https://github.com/FrancescoScanni/UDebate/blob/main/docker-compose.yml" target="_blank" class="gh-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Apri su GitHub</a>
+      </div>
+<pre><span class="k">services:</span>
+
+  <span class="t">app:</span>
+    <span class="n">build:</span> <span class="s">.</span>               <span class="c"># usa il Dockerfile nella root</span>
+    <span class="n">ports:</span>
+      - <span class="s">"8080:80"</span>         <span class="c"># localhost:8080 → Apache nel container</span>
+    <span class="n">depends_on:</span>
+      <span class="t">db:</span>
+        <span class="n">condition:</span> <span class="s">service_healthy</span>
+
+  <span class="t">db:</span>
+    <span class="n">image:</span> <span class="s">mysql:8.0</span>
+    <span class="n">environment:</span>
+      <span class="n">MYSQL_DATABASE:</span>  <span class="s">udebate</span>
+      <span class="n">MYSQL_ROOT_PASSWORD:</span> <span class="s">secret</span>
+    <span class="n">ports:</span>
+      - <span class="s">"3307:3306"</span>       <span class="c"># porta 3307 per evitare conflitti locali</span>
+    <span class="n">volumes:</span>
+      - <span class="s">db_data:/var/lib/mysql</span>  <span class="c"># dati persistenti</span>
+    <span class="n">healthcheck:</span>          <span class="c"># attende MySQL prima di avviare app</span>
+      <span class="n">test:</span> [<span class="s">"CMD"</span>, <span class="s">"mysqladmin"</span>, <span class="s">"ping"</span>]
+
+  <span class="t">phpmyadmin:</span>
+    <span class="n">image:</span> <span class="s">phpmyadmin:5</span>
+    <span class="n">ports:</span>
+      - <span class="s">"8081:80"</span>         <span class="c"># interfaccia web su localhost:8081</span>
+    <span class="n">environment:</span>
+      <span class="n">PMA_HOST:</span> <span class="s">db</span>        <span class="c"># si connette al service "db"</span>
+
+<span class="k">volumes:</span>
+  <span class="t">db_data:</span>               <span class="c"># volume named persistente</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ CONCLUSIONI -->
+<section class="section" id="conclusioni">
+  <div class="blob" style="width:500px;height:500px;background:#e8ff4709;top:-100px;right:-150px;"></div>
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">10 — Conclusioni</div>
+      <h2 class="sec-title">Riepilogo & Punti di forza</h2>
+      <p class="sec-sub">Cosa abbiamo imparato, cosa funziona bene, e cosa potrebbe essere esteso in futuro.</p>
+    </div>
+
+    <div class="talk-block">
+      <div class="talk-label">📢 Cosa dire per chiudere</div>
+      <div class="talk-time">~1 min</div>
+      <div class="talk-title">Come concludere l'esposizione</div>
+      <div class="talk-text">
+        In sintesi, <strong>UDebate</strong> è un progetto che integra diverse tecnologie 
+        moderne in modo coerente. Laravel ci ha dato la struttura, 
+        Livewire ha eliminato la necessità di scrivere JavaScript, 
+        Docker ha reso il deploy banale, e Groq ha aggiunto una dimensione di intelligenza artificiale 
+        applicata a un problema reale — la moderazione dei contenuti.<br><br>
+
+        Se dovessi indicare i tre elementi tecnici più significativi:<br>
+        <strong>1.</strong> L'<em>Eager Loading</em> con Eloquent, che ottimizza le query.<br>
+        <strong>2.</strong> Il <em>Middleware custom EnsureModerator</em>, che mostra come si estende Laravel.<br>
+        <strong>3.</strong> La <em>GroqModerationService</em>, che dimostra come integrare un LLM nel backend PHP.<br><br>
+
+        <em>"Siamo disponibili per domande."</em>
+      </div>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🏗️</div>
+        <div class="feat-title">Architettura MVC</div>
+        <div class="feat-desc">Separazione netta logica/dati/presentazione. Codice leggibile e manutenibile.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Zero JavaScript manuale</div>
+        <div class="feat-desc">Livewire gestisce tutta la reattività lato server. Il team ha potuto concentrarsi sul PHP.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-title">AI applicata</div>
+        <div class="feat-desc">Groq + LLaMA 3.1 per moderazione automatica. Latenza ~200ms, costo quasi zero.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🐳</div>
+        <div class="feat-title">Deploy riproducibile</div>
+        <div class="feat-desc">docker compose up --build avvia tutto in un comando. Nessun "funziona sul mio PC".</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔒</div>
+        <div class="feat-title">Sicurezza a strati</div>
+        <div class="feat-desc">CSRF protection, password hashed, UNIQUE constraint DB, middleware di autorizzazione.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <div class="feat-title">Scalabilità futura</div>
+        <div class="feat-desc">Struttura pronta per: notifiche real-time, sistema di tag, ranking debate, API REST.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="files">
+  <div class="content">
+    <div class="sec-header">
+      <div class="sec-tag">📁 — Tutti i file</div>
+      <h2 class="sec-title">Esplora il codice sorgente</h2>
+      <p class="sec-sub">Link diretti a ogni file del repository GitHub. Clicca per aprire nel browser.</p>
+    </div>
+
+    <div class="file-cat">🔧 Controllers</div>
+    <div class="file-grid">
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/DebateController.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>DebateController.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/LikeController.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>LikeController.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/CommentController.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>CommentController.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/ModeratorController.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>ModeratorController.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/SearchController.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>SearchController.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Controllers/Auth/VerifyEmailController.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>VerifyEmailController.php</a>
+    </div>
+
+    <div class="file-cat">📦 Models</div>
+    <div class="file-grid">
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/User.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>User.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/Debate.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Debate.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/Comment.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Comment.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/Like.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Like.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Models/DailyTopic.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>DailyTopic.php</a>
+    </div>
+
+    <div class="file-cat">⚡ Livewire & Services</div>
+    <div class="file-grid">
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Livewire/Forms/LoginForm.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>LoginForm.php (Livewire)</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Livewire/Actions/Logout.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Logout.php (Livewire)</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Services/GroqModerationService.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>GroqModerationService.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/app/Http/Middleware/EnsureModerator.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>EnsureModerator.php</a>
+    </div>
+
+    <div class="file-cat">🗄️ Database Migrations</div>
+    <div class="file-grid">
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/database/migrations/0001_01_01_000000_create_users_table.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>create_users_table.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/database/migrations/2026_05_24_180134_create_debates_table.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>create_debates_table.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/database/migrations/2026_05_24_184132_create_comments_table.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>create_comments_table.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/database/migrations/2026_05_24_184132_create_likes_table.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>create_likes_table.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/database/migrations/2026_05_25_115837_add_role_to_users_table.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>add_role_to_users.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/database/migrations/2026_05_25_175614_create_daily_topics_table.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>create_daily_topics_table.php</a>
+    </div>
+
+    <div class="file-cat">🎨 Views (Blade)</div>
+    <div class="file-grid">
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/welcome.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>welcome.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/dashboard.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>dashboard.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/profile.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>profile.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/moderator/dashboard.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>moderator/dashboard.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/search/index.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>search/index.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/livewire/pages/auth/login.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>livewire/auth/login.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/livewire/pages/auth/register.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>livewire/auth/register.blade.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/resources/views/livewire/layout/navigation.blade.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>livewire/layout/navigation.blade.php</a>
+    </div>
+
+    <div class="file-cat">🛣️ Routes & Config</div>
+    <div class="file-grid">
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/routes/web.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>routes/web.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/routes/auth.php" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>routes/auth.php</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/docker-compose.yml" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>docker-compose.yml</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/Dockerfile" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Dockerfile</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/vite.config.js" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>vite.config.js</a>
+      <a class="file-link" href="https://github.com/FrancescoScanni/UDebate/blob/main/tailwind.config.js" target="_blank"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>tailwind.config.js</a>
+    </div>
+
+    <div style="margin-top:32px;">
+      <a href="https://github.com/FrancescoScanni/UDebate" target="_blank" 
+         style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:rgba(232,255,71,.1);border:1px solid rgba(232,255,71,.3);border-radius:12px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:15px;text-decoration:none;transition:background .15s;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Apri repository completo su GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
 
 <script>
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+// Progress bar
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  document.getElementById('progress').style.width = scrolled + '%';
+});
+
+// Active nav tracking
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => {
+        n.classList.toggle('active', n.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+
+// Smooth scroll
+navItems.forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(item.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+function toggleFile(uid) {
+  const el = document.getElementById('file_' + uid);
+  const arrow = document.getElementById('arrow_' + uid);
+  const visible = el.style.display !== 'none';
+  el.style.display = visible ? 'none' : 'block';
+  arrow.style.transform = visible ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
 </script>
 </body>
 </html>
