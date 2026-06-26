@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentazione Orale — Portfolio FSL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #f5f0e8;
+      --warm:    #ede8dc;
+      --ink:     #1a1610;
+      --ink2:    #3d3629;
+      --muted:   #8c7f6e;
+      --accent:  #c4501a;
+      --accent2: #2a5c8a;
+      --accent3: #4a7c59;
+      --line:    rgba(26,22,16,0.12);
+      --ff-head: 'Playfair Display', serif;
+      --ff-body: 'DM Sans', sans-serif;
+      --ff-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--ff-body);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-brand {
+      font-family: var(--ff-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .nav-brand strong { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--ff-body);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink2);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.25s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      position: relative; z-index: 1;
+      padding: 8rem 3rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--line);
+    }
+    .page-eyebrow {
+      font-family: var(--ff-mono); font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem;
+    }
+    .page-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+    .page-title {
+      font-family: var(--ff-head);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900; line-height: 1.05;
+    }
+    .page-title em { font-style: italic; color: var(--accent); }
+    .page-desc {
+      font-size: 0.95rem; color: var(--muted);
+      font-weight: 300; line-height: 1.7;
+      max-width: 560px; margin-top: 1rem;
+    }
+
+    /* ── ORDER BADGE ── */
+    .order-note {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      margin-top: 1.5rem;
+      background: var(--warm);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent2);
+      border-radius: 6px;
+      padding: 0.7rem 1.1rem;
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--ink2);
+    }
+    .order-note span { color: var(--accent2); font-weight: 500; }
+
+    /* ── MAIN WRAP ── */
+    .main-wrap {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 3rem;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: var(--ff-mono); font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 0.5rem 0; border-top: 2px solid var(--ink);
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .section-label strong {
+      font-family: var(--ff-head); font-size: 1.05rem; font-weight: 700;
+      color: var(--ink); letter-spacing: 0; text-transform: none;
+    }
+    .section-num {
+      font-family: var(--ff-head); font-size: 4rem; font-weight: 900;
+      color: var(--line); line-height: 1; user-select: none;
+      float: right; margin-top: -0.3rem;
+    }
+
+    /* ── TOPIC BLOCK ── */
+    .topic-block {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 4rem;
+    }
+
+    /* Hero image banner */
+    .topic-banner {
+      width: 100%; height: 280px;
+      position: relative; overflow: hidden;
+      background: var(--ink);
+    }
+    .topic-banner img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.75;
+      transition: opacity 0.4s, transform 0.6s;
+    }
+    .topic-block:hover .topic-banner img {
+      opacity: 0.85;
+      transform: scale(1.03);
+    }
+    .topic-banner-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, rgba(26,22,16,0.7) 100%);
+      display: flex; align-items: flex-end;
+      padding: 2rem;
+    }
+    .topic-banner-tag {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: white;
+      padding: 0.35rem 0.8rem;
+      border-radius: 4px;
+    }
+
+    /* Body of topic block */
+    .topic-body {
+      background: var(--warm);
+      padding: 2.5rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .topic-lead {
+      font-family: var(--ff-head);
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.2rem;
+    }
+    .topic-lead em { font-style: italic; color: var(--accent); }
+
+    .topic-text {
+      font-size: 0.92rem;
+      color: var(--ink2);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .topic-text + .topic-text { margin-top: 1rem; }
+
+    /* Info chips sidebar */
+    .topic-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+
+    .info-chip {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1.1rem 1.3rem;
+      display: flex; align-items: flex-start; gap: 0.8rem;
+    }
+    .info-chip-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .info-chip-label {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+    .info-chip-value {
+      font-size: 0.88rem;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Photo gallery row */
+    .photo-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--line);
+      border-top: 1px solid var(--line);
+    }
+    .photo-cell {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-cell img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .photo-cell:hover img { transform: scale(1.06); }
+    .photo-cell-cap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(26,22,16,0.65));
+      padding: 0.6rem 0.8rem 0.5rem;
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      color: rgba(245,240,232,0.85);
+      text-transform: uppercase;
+    }
+
+    /* Quote highlight */
+    .topic-quote {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 2rem 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: flex-start; gap: 1.5rem;
+    }
+    .topic-quote-mark {
+      font-family: var(--ff-head);
+      font-size: 4rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 0.8;
+      flex-shrink: 0;
+    }
+    .topic-quote-text {
+      font-family: var(--ff-head);
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--cream);
+    }
+    .topic-quote-source {
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      text-transform: uppercase;
+    }
+
+    /* ── TRANSITION BADGE between sections ── */
+    .section-transition {
+      text-align: center;
+      padding: 2.5rem 0;
+      position: relative;
+    }
+    .section-transition::before {
+      content: '';
+      position: absolute; top: 50%; left: 0; right: 0;
+      height: 1px; background: var(--line);
+    }
+    .section-transition-badge {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.5rem 1.2rem;
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+    .section-transition-badge span { color: var(--accent); }
+
+    /* ── COSTITUZIONE special styling ── */
+    .topic-block.costituzione .topic-banner-tag {
+      background: var(--accent2);
+    }
+    .topic-block.costituzione .topic-lead em {
+      color: var(--accent2);
+    }
+
+    /* Article text display */
+    .article-text-box {
+      background: white;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 1.5rem 1.8rem;
+      margin: 1.5rem 0;
+    }
+    .article-text-box-label {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.6rem;
+    }
+    .article-text-box p {
+      font-size: 0.88rem;
+      color: var(--ink2);
+      line-height: 1.75;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    /* ── CLOSING BLOCK ── */
+    .closing-block {
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 12px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem;
+    }
+    .closing-text {
+      font-family: var(--ff-head);
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.3;
+    }
+    .closing-text em { color: var(--accent); font-style: normal; }
+    .closing-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      font-weight: 300;
+    }
+    .closing-badge {
+      background: var(--accent);
+      color: white;
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--line);
+      padding: 2rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      animation: fadeIn 0.7s ease forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .page-header { padding: 7rem 1.5rem 2rem; }
+      .main-wrap { padding: 2rem 1.5rem; }
+      .topic-body { grid-template-columns: 1fr; gap: 1.5rem; }
+      .photo-row { grid-template-columns: 1fr 1fr; }
+      .photo-row .photo-cell:last-child { display: none; }
+      .closing-block { flex-direction: column; align-items: flex-start; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand"><strong>FSL</strong> / Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="timeline.html">Timeline</a></li>
+    <li><a href="competenze.html">Competenze</a></li>
+    <li><a href="profilo.html">Profilo</a></li>
+    <li><a href="presentazione.html" class="active">Presentazione</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow fade-in">Relazione Orale · Parte Finale</div>
+  <h1 class="page-title fade-in delay-1">
+    Presentazione<br><em>dopo l'orale</em>
+  </h1>
+  <p class="page-desc fade-in delay-2">
+    Due temi da esporre al termine delle materie: l'esperienza FSL in Auriga SpA e la riflessione sull'Articolo 11 della Costituzione italiana.
+  </p>
+  <div class="order-note fade-in delay-3">
+    <span>① FSL — Auriga SpA</span>
+    &nbsp;·&nbsp; poi &nbsp;·&nbsp;
+    <span>② Ed. Civica — Art. 11 Cost.</span>
+    &nbsp;&nbsp;·&nbsp;&nbsp; da presentare dopo l'orale sulle materie
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+
+  <!-- ── PARTE 1: AURIGA ── -->
+  <div class="section-label reveal">
+    <strong>Parte 2 — Esperienza FSL</strong>
+    <span>Visita aziendale · Classe V</span>
+  </div>
+
+  <div class="topic-block reveal">
+
+    <!-- Banner image -->
+    <div class="topic-banner">
+      <img
+        src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&q=80"
+        alt="Uffici aziendali tecnologici"
+        onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80'"
+      />
+      <div class="topic-banner-overlay">
+        <span class="topic-banner-tag">🏦 Auriga SpA · Bari · V ITIA C</span>
+      </div>
+    </div>
+
+    <!-- 3-photo row -->
+    <div class="photo-row">
+      <div class="photo-cell">
+        <img
+          src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&q=80"
+          alt="Team aziendale in riunione"
+          onerror="this.style.background='var(--warm)'"
+        />
+        <div class="photo-cell-cap">Team &amp; organizzazione</div>
+      </div>
+      <div class="photo-cell">
+        <img
+          src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&q=80"
+          alt="Software bancario e fintech"
+          onerror="this.style.background='var(--warm)'"
+        />
+        <div class="photo-cell-cap">Software bancario omnicanale</div>
+      </div>
+      <div class="photo-cell">
+        <img
+          src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&q=80"
+          alt="Open space aziendale"
+          onerror="this.style.background='var(--warm)'"
+        />
+        <div class="photo-cell-cap">Ambiente di lavoro reale</div>
+      </div>
+    </div>
+
+    <!-- Body: testo + sidebar -->
+    <div class="topic-body">
+      <div>
+        <h2 class="topic-lead">
+          L'esperienza in <em>Auriga SpA</em>
+        </h2>
+        <p class="topic-text">
+          Tra le esperienze di Formazione Scuola Lavoro di questo triennio, quella che mi ha colpito di più è stata la visita guidata presso la sede di Bari di Auriga SpA — azienda leader italiana nel software per la banca omnicanale, con una presenza in oltre 60 paesi nel mondo.
+        </p>
+        <p class="topic-text">
+          Fino a quel momento, l'ambiente aziendale lo conoscevo solo per sentito dire, o nella forma di laboratori scolastici. Entrare invece in una realtà aziendale vera e affermata a livello internazionale è stato completamente diverso: ho potuto vedere come è organizzato concretamente un'azienda tecnologica, quali figure professionali ci lavorano, come si articola il lavoro di chi sviluppa software per un settore delicato come quello bancario.
+        </p>
+        <p class="topic-text">
+          Questa esperienza mi ha aiutato a capire meglio cosa significhi davvero lavorare nel settore informatico al di fuori del contesto scolastico, e mi ha dato una motivazione in più a voler entrare, un giorno, a far parte di un ambiente lavorativo simile, capace di valorizzare le competenze e il potenziale di chi ci lavora.
+        </p>
+      </div>
+
+      <div class="topic-sidebar">
+        <div class="info-chip">
+          <div class="info-chip-icon">🏢</div>
+          <div>
+            <div class="info-chip-label">Azienda</div>
+            <div class="info-chip-value">Auriga SpA — sede di Bari</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">🌍</div>
+          <div>
+            <div class="info-chip-label">Presenza globale</div>
+            <div class="info-chip-value">Leader italiano nel banking software · 60+ paesi nel mondo</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">💻</div>
+          <div>
+            <div class="info-chip-label">Settore</div>
+            <div class="info-chip-value">Software per banca omnicanale, ATM, self-service bancario</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">🎓</div>
+          <div>
+            <div class="info-chip-label">Anno scolastico</div>
+            <div class="info-chip-value">Classe V · A.S. 2025/26</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">✨</div>
+          <div>
+            <div class="info-chip-label">Cosa ho imparato</div>
+            <div class="info-chip-value">Organizzazione aziendale reale, figure professionali IT, sviluppo software in ambito bancario</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pull quote -->
+    <div class="topic-quote">
+      <div class="topic-quote-mark">"</div>
+      <div>
+        <div class="topic-quote-text">
+          Vedere da vicino come funziona un'azienda tecnologica di livello internazionale mi ha dato una motivazione concreta: capire dove voglio arrivare.
+        </div>
+        <div class="topic-quote-source">Riflessione personale · Visita Auriga SpA · Bari</div>
+      </div>
+    </div>
+
+  </div><!-- /topic-block auriga -->
+
+  <!-- ── TRANSITION ── -->
+  <div class="section-transition reveal">
+    <div class="section-transition-badge">
+      <span>Parte 2</span> completata &nbsp;·&nbsp; a seguire <span>Educazione Civica</span>
+    </div>
+  </div>
+
+  <!-- ── PARTE 2: ARTICOLO 11 ── -->
+  <div class="section-label reveal">
+    <strong>Parte 3 — Educazione Civica</strong>
+    <span>Ultimo argomento · Presentazione finale</span>
+  </div>
+
+  <div class="topic-block costituzione reveal">
+
+    <!-- Banner image -->
+    <div class="topic-banner">
+      <img
+        src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1200&q=80"
+        alt="Pace e diplomazia internazionale"
+        onerror="this.src='https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&q=80'"
+      />
+      <div class="topic-banner-overlay">
+        <span class="topic-banner-tag" style="background:var(--accent2);">⚖️ Articolo 11 — Costituzione Italiana</span>
+      </div>
+    </div>
+
+    <!-- 3-photo row -->
+    <div class="photo-row">
+      <div class="photo-cell">
+        <img
+          src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80"
+          alt="Organizzazioni internazionali e cooperazione"
+          onerror="this.style.background='var(--warm)'"
+        />
+        <div class="photo-cell-cap">Cooperazione internazionale</div>
+      </div>
+      <div class="photo-cell">
+        <img
+          src="https://images.unsplash.com/photo-1580128660010-fd027e1e587a?w=600&q=80"
+          alt="Diplomazia e pace"
+          onerror="this.style.background='var(--warm)'"
+        />
+        <div class="photo-cell-cap">Dialogo e pace tra i popoli</div>
+      </div>
+      <div class="photo-cell">
+        <img
+          src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=600&q=80"
+          alt="Costituzione e giustizia"
+          onerror="this.style.background='var(--warm)'"
+        />
+        <div class="photo-cell-cap">Giustizia tra le nazioni</div>
+      </div>
+    </div>
+
+    <!-- Body: testo + sidebar -->
+    <div class="topic-body">
+      <div>
+        <h2 class="topic-lead">
+          Articolo 11 della <em>Costituzione</em>
+        </h2>
+
+        <!-- Testo dell'articolo -->
+        <div class="article-text-box">
+          <div class="article-text-box-label">Art. 11 — Costituzione della Repubblica Italiana (1948)</div>
+          <p>
+            «L'Italia ripudia la guerra come strumento di offesa alla libertà degli altri popoli e come mezzo di risoluzione delle controversie internazionali; consente, in condizioni di parità con gli altri Stati, alle limitazioni di sovranità necessarie ad un ordinamento che assicuri la pace e la giustizia fra le Nazioni; promuove e favorisce le organizzazioni internazionali rivolte a tale scopo.»
+          </p>
+        </div>
+
+        <p class="topic-text">
+          Si tratta di un principio scritto quasi ottant'anni fa, ma che oggi, guardando ai conflitti che vediamo ogni giorno nei notiziari, assume un significato ancora più concreto. Studiare questo articolo mi ha fatto riflettere su come la pace non sia uno stato naturale e scontato, ma un obiettivo che richiede impegno costante, dialogo e cooperazione tra i popoli.
+        </p>
+        <p class="topic-text">
+          Proprio come previsto dalla nostra Costituzione, quando parla di organizzazioni internazionali volte ad assicurare la pace e la giustizia tra le nazioni — un principio che, oggi più che mai, sentiamo urgente e necessario.
+        </p>
+      </div>
+
+      <div class="topic-sidebar">
+        <div class="info-chip">
+          <div class="info-chip-icon">📜</div>
+          <div>
+            <div class="info-chip-label">Fonte</div>
+            <div class="info-chip-value">Costituzione della Repubblica Italiana · 1948</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">🕊️</div>
+          <div>
+            <div class="info-chip-label">Principio fondamentale</div>
+            <div class="info-chip-value">Ripudio della guerra · Promozione della pace internazionale</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">🌐</div>
+          <div>
+            <div class="info-chip-label">Contesto attuale</div>
+            <div class="info-chip-value">I conflitti in corso rendono questo articolo più urgente che mai</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">🏛️</div>
+          <div>
+            <div class="info-chip-label">Ambito</div>
+            <div class="info-chip-value">Educazione Civica · Principi fondamentali della Costituzione</div>
+          </div>
+        </div>
+        <div class="info-chip">
+          <div class="info-chip-icon">💬</div>
+          <div>
+            <div class="info-chip-label">La mia riflessione</div>
+            <div class="info-chip-value">La pace non è uno stato naturale: richiede impegno, dialogo e cooperazione costante tra i popoli</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pull quote -->
+    <div class="topic-quote" style="background: #1c2a3a;">
+      <div class="topic-quote-mark" style="color:#6fa3d0;">"</div>
+      <div>
+        <div class="topic-quote-text">
+          La pace non è uno stato naturale e scontato, ma un obiettivo che richiede impegno costante, dialogo e cooperazione tra i popoli.
+        </div>
+        <div class="topic-quote-source">Riflessione personale sull'Articolo 11 · Educazione Civica</div>
+      </div>
+    </div>
+
+  </div><!-- /topic-block costituzione -->
+
+  <!-- ── CLOSING ── -->
+  <div class="closing-block reveal">
+    <div>
+      <div class="closing-text">
+        Grazie <em>dell'attenzione.</em>
+      </div>
+      <div class="closing-sub">
+        V ITIA C · ITT Panetti-Pitagora · A.S. 2025/26 · Relazione Finale FSL
+      </div>
+    </div>
+    <div class="closing-badge">Fine presentazione</div>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<footer>
+  <span>ITT "Panetti-Pitagora" · Via Re David 186, Bari</span>
+  <span>Relazione Finale FSL · V ITIA C · A.S. 2025/26</span>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
